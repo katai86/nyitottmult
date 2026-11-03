@@ -1,0 +1,45 @@
+# ==============================================================================
+# Nyitott Múlt – DirectAdmin Apache / LiteSpeed .htaccess konfiguráció
+# ==============================================================================
+
+Options -Indexes
+ServerSignature Off
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    # Biztonság: érzékeny fájlok tiltása
+    RewriteRule ^config\.php$ - [F,L]
+    RewriteRule ^\.env$ - [F,L]
+    RewriteRule ^composer\.(json|lock)$ - [F,L]
+    RewriteRule ^database/ - [F,L]
+
+    # Ha létező fájl vagy mappa, kiszolgálás közvetlenül
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+
+    # API kérések átirányítása az api/index.php-ra
+    RewriteCond %{REQUEST_URI} ^/api(/.*)?$ [NC]
+    RewriteRule ^api/(.*)$ api/index.php [QSA,L]
+
+    # Minden egyéb oldal kérés átirányítása az index.php-ra
+    RewriteRule ^(.*)$ index.php [QSA,L]
+</IfModule>
+
+# Karakterkódolás
+AddDefaultCharset UTF-8
+
+# Biztonsági fejlécek
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-XSS-Protection "1; mode=block"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# Gzip tömörítés
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json
+</IfModule>

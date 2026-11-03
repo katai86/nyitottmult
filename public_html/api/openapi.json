@@ -1,0 +1,139 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Nyitott Múlt REST API – Orosháza titkos múltja",
+    "version": "1.0.0",
+    "description": "Nyílt, forrásalapú helytörténeti kutatóplatform REST API-ja a 2026. évi LI. törvény alapján közzétett magyar állambiztonsági iratok vizsgálatához.",
+    "contact": {
+      "name": "Kátai Attila",
+      "email": "katai.attila@example.hu"
+    },
+    "license": {
+      "name": "AGPL-3.0",
+      "url": "https://www.gnu.org/licenses/agpl-3.0.html"
+    }
+  },
+  "servers": [
+    {
+      "url": "/api",
+      "description": "Alapértelmezett REST API kiszolgáló"
+    }
+  ],
+  "paths": {
+    "/v1/documents": {
+      "get": {
+        "summary": "Levéltári forrásiratok listája",
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Szűrés irattípusra (pl. 6_os_karton, b_naplo, m_dosszie)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Iratok listája",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "count": { "type": "integer" },
+                    "data": { "type": "array" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/entities": {
+      "get": {
+        "summary": "Nyilvános személyek, szervezetek és fedőnevek listája",
+        "description": "A 2026. évi LI. tv. alapján élő vagy ismeretlen élethelyzetű személyek automatikusan anonimizálva kerülnek kiadásra.",
+        "responses": {
+          "200": { "description": "Entitások listája" }
+        }
+      }
+    },
+    "/v1/claims": {
+      "get": {
+        "summary": "Ellenőrzött forrásállítások idézetekkel és oldalszámokkal",
+        "responses": {
+          "200": { "description": "Ellenőrzött állítások listája" }
+        }
+      }
+    },
+    "/v1/map/places": {
+      "get": {
+        "summary": "Térképi helyszínek GeoJSON formátumban",
+        "description": "Magánlakások pontos koordinátája a jogszabályoknak megfelelően városrész-szintre elmosva.",
+        "responses": {
+          "200": { "description": "GeoJSON FeatureCollection" }
+        }
+      }
+    },
+    "/v1/search": {
+      "post": {
+        "summary": "Összetett és hibrid keresés",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "query": { "type": "string" },
+                  "type": { "type": "string" },
+                  "role": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Keresési találatok" }
+        }
+      }
+    },
+    "/v1/ai/ask": {
+      "post": {
+        "summary": "AI Történész kérdezz-felelek modul",
+        "description": "Kizárólag a feltöltött orosházi levéltári iratokból válaszol, kötelező forráshivatkozással.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["question"],
+                "properties": {
+                  "question": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Válasz és kapcsolódó levéltári források listája" }
+        }
+      }
+    },
+    "/v1/submissions": {
+      "post": {
+        "summary": "Lakossági helytörténeti beküldés (visszaemlékezés, fotó)",
+        "responses": {
+          "200": { "description": "Beküldés sikeresen rögzítve" }
+        }
+      }
+    },
+    "/v1/corrections": {
+      "post": {
+        "summary": "Hivatalos helyesbítési kérelem vagy kiegészítő nyilatkozat",
+        "responses": {
+          "200": { "description": "Kérelem regisztrálva, ügyszám és 30 napos határidő kiadva" }
+        }
+      }
+    }
+  }
+}

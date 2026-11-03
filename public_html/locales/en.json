@@ -1,0 +1,99 @@
+{
+  "site_title": "Secret Past of Orosháza",
+  "site_subtitle": "In the Footsteps of State Security Files – Source-based Research Platform",
+  "tagline": "Free, public, map-based research platform for Hungarian state security records – every claim strictly backed by archival sources.",
+  "nav": {
+    "home": "Home & Methodology",
+    "map": "Time-travel Map",
+    "search": "Search",
+    "documents": "Documents",
+    "entities": "People & Organizations",
+    "evidence_map": "Evidence Map",
+    "network": "Network Graph",
+    "timeline": "Timeline",
+    "ai_historian": "AI Historian",
+    "stories": "Historical Stories",
+    "community": "Community Submissions",
+    "correction": "Correction & Statement",
+    "transparency": "Transparency",
+    "researcher": "Researcher Portal",
+    "api_docs": "API Docs"
+  },
+  "roles": {
+    "beszervezett_halozati_szemely": "Recruited network person (agent/informer)",
+    "megfigyelt": "Observed person (target/victim)",
+    "tiszt": "Operative officer / Case officer",
+    "beszervezesi_kiserlet_alanya": "Target of recruitment attempt (unsuccessful)",
+    "egyeb_emlitett": "Other mentioned person (witness, colleague, family)",
+    "ismeretlen": "Unclarified / Unknown role"
+  },
+  "roles_desc": {
+    "beszervezett_halozati_szemely": "A person whose recruitment is verified by state security registers.",
+    "megfigyelt": "A person targeted for surveillance by state security. A victim whose rights were infringed.",
+    "tiszt": "A professional officer of the Ministry of Interior or local operational branch.",
+    "beszervezesi_kiserlet_alanya": "A person whose recruitment was attempted but rejected or failed.",
+    "egyeb_emlitett": "A person mentioned solely for contextual background in operative reports.",
+    "ismeretlen": "Role not yet determined based on available files."
+  },
+  "methodology": {
+    "title": "How to read state security files?",
+    "warning_title": "IMPORTANT WARNING",
+    "warning_text": "This platform is NOT a defamatory name list. Mere mention in a file NEVER equates to being an agent. Archival records require source criticism and cross-verification.",
+    "card_6_title": "Index Card 6",
+    "card_6_desc": "Primary record of an operational network person. Contains personal details, codename, date of recruitment, and case officer name.",
+    "b_naplo_title": "Recruitment Log (B-napló)",
+    "b_naplo_desc": "Chronological ledger of recruitments and dismissals. High evidentiary weight when cross-referenced with index cards.",
+    "h_adattar_title": "Network Directory (H-adattár)",
+    "h_adattar_desc": "Summary registries showing the operative structure across counties and districts.",
+    "dual_verif_title": "Dual Verification",
+    "dual_verif_desc": "No claim is published until independently validated by at least two researchers based on original archival text."
+  },
+  "privacy": {
+    "protected_person": "[Protected person – Act LI of 2026]",
+    "protected_notice": "Non-anonymized personal data is made public strictly after the 5th calendar year following death. Living or unknown status individuals are legally protected.",
+    "private_residence_blurred": "[Private residence – exact address and coordinates blurred to district level by law]",
+    "death_plus_five": "Death year + 5 years rule enforced"
+  },
+  "search": {
+    "search_placeholder": "Search by name, codename, institution, street name, or keyword...",
+    "all_types": "All types",
+    "person": "Person",
+    "organization": "Organization",
+    "codename": "Codename",
+    "place": "Location",
+    "event": "Event",
+    "all_roles": "All roles",
+    "results_count": "{count} results",
+    "no_results": "No results matching criteria."
+  },
+  "ai": {
+    "title": "AI Historian – Source-backed Research Assistant",
+    "disclaimer": "The AI historian responds strictly using verified archival records from Orosháza. Every sentence cites exact sources. No guessing.",
+    "ask_placeholder": "Ask a question (e.g. Who was the handler of informer 'Homok'?)...\n",
+    "no_source_answer": "There is no archival source for this inquiry in the available Orosháza records.",
+    "send": "Ask",
+    "thinking": "Consulting sources..."
+  },
+  "evidence": {
+    "title": "Evidence Map",
+    "subtitle": "Direct verification for every claim",
+    "archive_ref": "Archive Reference",
+    "page": "page",
+    "quote": "Verbatim Quote from File",
+    "verifications": "Reviewer Approvals",
+    "status": "Status"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "save": "Save",
+    "cancel": "Cancel",
+    "submit": "Submit",
+    "details": "Details",
+    "source": "Source",
+    "back": "Back",
+    "copy_citation": "Copy Citation",
+    "citation_copied": "Citation copied to clipboard!",
+    "open_viewer": "Open in Document Viewer"
+  }
+}

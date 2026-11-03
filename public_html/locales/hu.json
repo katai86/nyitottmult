@@ -1,0 +1,99 @@
+{
+  "site_title": "Orosháza titkos múltja",
+  "site_subtitle": "Az ügynökakták nyomában – Forrásalapú helytörténeti kutatóplatform",
+  "tagline": "Ingyenes, nyilvános, térképes kutatóplatform a magyar állambiztonsági iratokhoz – minden állítás mögött pontos levéltári forrással.",
+  "nav": {
+    "home": "Kezdőlap & Módszertan",
+    "map": "Időutazó Térkép",
+    "search": "Kereső",
+    "documents": "Dokumentumtár",
+    "entities": "Személyek & Szervezetek",
+    "evidence_map": "Bizonyítéktérkép",
+    "network": "Kapcsolati Háló",
+    "timeline": "Idővonal",
+    "ai_historian": "AI Történész",
+    "stories": "Helytörténeti Sztorik",
+    "community": "Közösségi Beküldés",
+    "correction": "Helyesbítés & Nyilatkozat",
+    "transparency": "Átláthatóság",
+    "researcher": "Kutatói Pult",
+    "api_docs": "API Dokumentáció"
+  },
+  "roles": {
+    "beszervezett_halozati_szemely": "Beszervezett hálózati személy (ügynök/informátor)",
+    "megfigyelt": "Megfigyelt személy (áldozat/célszemély)",
+    "tiszt": "Operatív tiszt / Tartótiszt",
+    "beszervezesi_kiserlet_alanya": "Beszervezési kísérlet alanya (sikertelen)",
+    "egyeb_emlitett": "Egyéb említett személy (tanú, kolléga, családtag)",
+    "ismeretlen": "Tisztázatlan / Ismeretlen szerep"
+  },
+  "roles_desc": {
+    "beszervezett_halozati_szemely": "Olyan személy, akinek beszervezését az állambiztonsági nyilvántartások (6-os karton, B-napló) igazolják.",
+    "megfigyelt": "Olyan személy, akiről az állambiztonság operatív megfigyelést folytatott. Áldozat, akinek jogait megsértették.",
+    "tiszt": "A Belügyminisztérium vagy kirendeltsége hivatásos operatív tisztje, foglalkoztatója.",
+    "beszervezesi_kiserlet_alanya": "Személy, akit megpróbáltak beszervezni, de ellenállt vagy alkalmatlannak bizonyult.",
+    "egyeb_emlitett": "Olyan személy, aki kizárólag kontextuálisan (pl. munkatárs, szomszéd, családtag) kerül említésre a jelentésekben.",
+    "ismeretlen": "A rendelkezésre álló iratok alapján a szerep még nem tisztázott."
+  },
+  "methodology": {
+    "title": "Hogyan kell olvasni egy állambiztonsági aktát?",
+    "warning_title": "FONTOS FIGYELMEZTETÉS",
+    "warning_text": "Ez a platform NEM lejárató névlista és NEM nyilvános pellengér. Az iratokban való egyszerű megemlítés önmagában SOHA nem jelent ügynöki múltat! A levéltári források forráskritikai elemzést, keresztellenőrzést igényelnek.",
+    "card_6_title": "A 6-os nyilvántartó karton",
+    "card_6_desc": "Az állambiztonság hálózati nyilvántartásának alapeleme. Tartalmazza a hálózati személy adatait, fedőnevét, beszervezési dátumát és a beszervező tiszt nevét.",
+    "b_naplo_title": "A Beszervezési Napló (B-napló)",
+    "b_naplo_desc": "Időrendi nyilvántartás a beszervezésekről és kizárásokról. Bizonyító ereje a kartonokkal összevetve nagy.",
+    "h_adattar_title": "A Hálózati Adattár (H-adattár)",
+    "h_adattar_desc": "Összesítő nyilvántartások, amelyek az operatív hálózat megyei és járási tagozódását mutatják be.",
+    "dual_verif_title": "Kétlépcsős Ellenőrzés (Dual Verification)",
+    "dual_verif_desc": "Egyetlen állítás sem válik nyilvánossá, amíg azt legalább két független kutató nem igazolta a levéltári eredeti forrásszöveg alapján."
+  },
+  "privacy": {
+    "protected_person": "[Védett személy – 2026. évi LI. tv.]",
+    "protected_notice": "A nem anonimizált személyes adat kizárólag az érintett halálának évét követő 5 év elteltével válik közzétehetővé. Élő vagy ismeretlen státuszú személy adatai a törvény alapján védettek.",
+    "private_residence_blurred": "[Magánlakás – a pontos cím és koordináta a törvény alapján városrész-szintre elmosva]",
+    "death_plus_five": "Halál éve + 5 év szabály érvényesítve"
+  },
+  "search": {
+    "search_placeholder": "Keresés név, fedőnév, intézmény, utcanév vagy kulcsszó alapján...",
+    "all_types": "Minden típus",
+    "person": "Személy",
+    "organization": "Szervezet / Intézmény",
+    "codename": "Fedőnév",
+    "place": "Helyszín",
+    "event": "Esemény",
+    "all_roles": "Minden szerepkör",
+    "results_count": "{count} találat",
+    "no_results": "Nincs a keresési feltételeknek megfelelő találat."
+  },
+  "ai": {
+    "title": "AI Történész – Forrásalapú Kutatóasszisztens",
+    "disclaimer": "Az AI történész kizárólag a feltöltött és ellenőrzött orosházi levéltári forrásokból válaszol. Minden mondathoz pontos hivatkozást csatol. Ha egy kérdésre nincs forrás a gyűjteményben, nem találgat.",
+    "ask_placeholder": "Tegyen fel egy kérdést (pl. Ki volt 'Homok' fedőnevű informátor tartótisztje?)...",
+    "no_source_answer": "Erre a kérdésre a rendelkezésre álló orosházi dokumentumokban nincs forrás.",
+    "send": "Kérdezés",
+    "thinking": "Források átvizsgálása..."
+  },
+  "evidence": {
+    "title": "Bizonyítéktérkép",
+    "subtitle": "Minden állítás forrásának közvetlen ellenőrzése",
+    "archive_ref": "Levéltári jelzet",
+    "page": "oldal",
+    "quote": "Szó szerinti idézet az aktából",
+    "verifications": "Lektori jóváhagyások",
+    "status": "Státusz"
+  },
+  "common": {
+    "loading": "Betöltés...",
+    "error": "Hiba történt",
+    "save": "Mentés",
+    "cancel": "Mégse",
+    "submit": "Beküldés",
+    "details": "Részletek",
+    "source": "Forrás",
+    "back": "Vissza",
+    "copy_citation": "Hivatkozás másolása",
+    "citation_copied": "Hivatkozás a vágólapra másolva!",
+    "open_viewer": "Megnyitás iratnézőben"
+  }
+}
