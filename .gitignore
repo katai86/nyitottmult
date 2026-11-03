@@ -1,0 +1,24 @@
+# Környezeti és érzékeny fájlok
+.env
+config.local.php
+
+# Feltöltött valós dokumentumok és iratképek (a repóba nem kerülhet valódi irat!)
+public_html/uploads/docs/*
+!public_html/uploads/docs/.gitkeep
+public_html/uploads/submissions/*
+!public_html/uploads/submissions/.gitkeep
+
+# Python cache és generált fájlok
+__pycache__/
+*.py[cod]
+*$py.class
+tools/ingested_*.json
+tools/*.sql
+
+# Naplófájlok
+*.log
+
+# Operációs rendszer fájlok
+.DS_Store
+Thumbs.db
+desktop.ini

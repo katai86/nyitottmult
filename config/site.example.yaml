@@ -1,0 +1,42 @@
+site:
+  id: "telepules-minta"
+  name: "Minta Település titkos múltja"
+  subtitle: "Az ügynökakták nyomában"
+  description: "Forrásalapú helytörténeti kutatóplatform a helyi állambiztonsági iratok vizsgálatára."
+  initiator:
+    name: "Kezdeményező Neve"
+    title: "Kutató / Helytörténész"
+    contact: "kapcsolat@example.hu"
+  
+settlement:
+  name: "Település Neve"
+  county: "Megye / Vármegye"
+  country: "Magyarország"
+  center:
+    lat: 47.4979
+    lng: 19.0402
+  initial_zoom: 13
+  boundary_polygon:
+    type: "Polygon"
+    coordinates: []
+
+map:
+  tile_provider: "openfreemap"
+  tile_url: "https://tiles.openfreemap.org/styles/bright/{z}/{x}/{y}.png"
+  attribution: "© OpenStreetMap contributors, OpenFreeMap"
+
+privacy:
+  death_plus_years: 5
+  legal_reference: "2026. évi LI. törvény 14. §"
+  living_persons_default_hidden: true
+  private_residence_blur_to_district: true
+  dual_verification_required_for_public_claims: true
+
+ai:
+  provider: "gemini"
+  model: "gemini-1.5-flash"
+  temperature: 0.1
+
+languages:
+  default: "hu"
+  supported: ["hu", "en"]
