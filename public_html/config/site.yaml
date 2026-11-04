@@ -30,9 +30,9 @@ settlement:
         ]
 
 map:
-  tile_provider: "openfreemap"
-  tile_url: "https://tiles.openfreemap.org/styles/bright/{z}/{x}/{y}.png"
-  attribution: "© OpenStreetMap contributors, OpenFreeMap"
+  tile_provider: "osm"
+  tile_url: "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+  attribution: "© OpenStreetMap contributors"
   historic_layers:
     - id: "oroshaza_1960_military"
       name: "1960-as évek katonai felmérés"

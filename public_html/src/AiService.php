@@ -1,11 +1,11 @@
 <?php
 /**
- * Nyitott Múlt – AI Történész és Szemantikus Kereső Szolgáltatás
+ * Nyitott Múlt – AI Történész és Szemantikus Levéltári Kereső Szolgáltatás
  * 
  * Szigorúan forrásalapú RAG (Retrieval-Augmented Generation):
- * - Kizárólag az orosházi levéltári forrásokból válaszol
- * - Minden mondatnál kötelező forráshivatkozás
- * - Ha nincs adat: "Erre a kérdésre a rendelkezésre álló orosházi dokumentumokban nincs forrás."
+ * - Kizárólag az orosházi levéltári forrásokból és adatbázisból válaszol
+ * - Minden állításnál kötelező a pontos levéltári forrásjelzet és oldalszám
+ * - Ha nincs forrás: "Erre a kérdésre a rendelkezésre álló orosházi levéltári dokumentumokban nincs forrás."
  */
 
 declare(strict_types=1);
@@ -15,7 +15,7 @@ namespace NyitottMult;
 class AiService
 {
     /**
-     * Kérdés megválaszolása kizárólag a feltöltött és ellenőrzött dokumentumok alapján
+     * Kérdés megválaszolása a levéltári források alapján
      */
     public static function askHistorian(string $question): array
     {
@@ -28,10 +28,40 @@ class AiService
             ];
         }
 
-        // 1. Kontextus összegyűjtése az adatbázisból (FTS és kulcsszavas keresés a hitelesített Claims és Pages alapján)
-        $contextData = self::retrieveContext($question);
+        // 1. Keresőszavak tisztítása és előkészítése (írásjelek eltávolítása, stop szavak kiszűrése)
+        $cleanQuestion = preg_replace('/[^\p{L}\p{N}\s]/u', ' ', $question);
+        $rawWords = array_filter(explode(' ', mb_strtolower($cleanQuestion)), fn($w) => mb_strlen($w) >= 3);
 
-        if (empty($contextData['items'])) {
+        $stopwords = ['ki', 'volt', 'voltak', 'milyen', 'hol', 'mikor', 'hogy', 'miert', 'miért', 'tudsz', 'valamit', 'mondani', 'mesélj', 'szerint', 'lehet', 'orosháza', 'orosházi', 'akták', 'akta', 'irat', 'iratok', 'ember', 'emberek', 'személy', 'személyek', 'valaki'];
+        $keywords = array_values(array_filter($rawWords, fn($w) => !in_array($w, $stopwords, true)));
+
+        if (empty($keywords)) {
+            $keywords = array_values($rawWords);
+        }
+
+        if (empty($keywords)) {
+            return [
+                'answer' => __('ai.no_source_answer'),
+                'sources' => [],
+                'status' => 'no_keywords'
+            ];
+        }
+
+        // 2. Keresőszavak tágítása: magyar ragozás levágása (stemming) és ékezet-normalizálás
+        $searchTerms = [];
+        foreach ($keywords as $kw) {
+            $searchTerms[] = $kw;
+            $stem = self::stemHungarian($kw);
+            $searchTerms[] = $stem;
+            $searchTerms[] = self::stripAccents($kw);
+            $searchTerms[] = self::stripAccents($stem);
+        }
+        $searchTerms = array_values(array_unique(array_filter($searchTerms, fn($t) => mb_strlen($t) >= 3)));
+
+        // 3. Kontextus és releváns adatok kinyerése az adatbázisból
+        $context = self::retrieveArchivalContext($searchTerms, $question);
+
+        if (empty($context['claims']) && empty($context['entities'])) {
             return [
                 'answer' => __('ai.no_source_answer'),
                 'sources' => [],
@@ -39,77 +69,77 @@ class AiService
             ];
         }
 
-        // 2. Prompt összeállítása szigorú forráshivatkozási kényszerrel
-        $systemPrompt = "Te a 'Nyitott Múlt - Orosháza titkos múltja' elnevezésű platform szigorúan forrásalapú AI kutatóasszisztense vagy.\n"
-            . "SZABÁLYOK:\n"
-            . "1. Kizárólag a lent megadott HITELESÍTETT LEVÉLTÁRI FORRÁSOK alapján válaszolhatsz.\n"
-            . "2. Minden egyes kijelentésed végére KÖTELEZŐ kitenni a forrás pontos hivatkozását, pl. [ÁBTL-3.1.2-M-123, 14. o.]!\n"
-            . "3. Ha a megadott források nem tartalmaznak választ a feltett kérdésre, KIZÁRÓLAG ezt a választ adhatod szó szerint: '" . __('ai.no_source_answer') . "'\n"
-            . "4. Találgatni, kikövetkeztetni nem létező tényeket, vagy a forrásokon kívüli információt bevonni SZIGORÚAN TILOS!\n"
-            . "5. Az aktában való puszta szereplés nem ügynöki múlt: mindig pontosan jelöld meg a személy szerepkörét (megfigyelt, tiszt, informátor, tanú).";
+        // 4. Külső Gemini API hívása, ha van érvényes API kulcs
+        $geminiKey = defined('GEMINI_API_KEY') ? trim(GEMINI_API_KEY) : '';
+        if (!empty($geminiKey)) {
+            $systemPrompt = "Te a 'Nyitott Múlt - Orosháza titkos múltja' elnevezésű helytörténeti platform szigorúan forrásalapú levéltári AI kutatóasszisztense vagy.\n"
+                . "SZABÁLYOK:\n"
+                . "1. Kizárólag a lent megadott HITELESÍTETT LEVÉLTÁRI FORRÁSOK alapján válaszolhatsz.\n"
+                . "2. Minden egyes kijelentésed végére KÖTELEZŐ kitenni a pontos forráshivatkozást, pl. [ÁBTL-3.1.2-M-123, 14. o.]!\n"
+                . "3. Ha a források nem tartalmaznak választ a feltett kérdésre, KIZÁRÓLAG ezt a választ adhatod szó szerint: '" . __('ai.no_source_answer') . "'\n"
+                . "4. Találgatni, kikövetkeztetni nem létező adatot SZIGORÚAN TILOS!\n"
+                . "5. Az aktában való puszta említés önmagában NEM jelent ügynöki múltat; mindig pontosan nevezd meg a szerepkört (megfigyelt, hivatásos tiszt, beszervezett informátor, egyéb említett).";
 
-        $userPrompt = "KÉRDÉS: " . $question . "\n\n"
-            . "RENDELKEZÉSRE ÁLLÓ LEVÉLTÁRI FORRÁSOK:\n"
-            . $contextData['formatted_text'] . "\n\n"
-            . "VÁLASZ (szigorúan idézettel és forrásmegjelöléssel minden mondatnál):";
+            $userPrompt = "KÉRDÉS: " . $question . "\n\n"
+                . "RENDELKEZÉSRE ÁLLÓ FORRÁSOK:\n"
+                . $context['formatted_text'] . "\n\n"
+                . "VÁLASZ:";
 
-        // 3. API hívás (Gemini 1.5 vagy OpenAI)
-        $apiKey = defined('GEMINI_API_KEY') ? GEMINI_API_KEY : '';
-        if (empty($apiKey)) {
-            // Ha nincs megadva külső kulcs, a beépített hitelesített mintaválaszt adjuk a talált kontextusból
-            return [
-                'answer' => self::generateRuleBasedAnswer($contextData['items'], $question),
-                'sources' => $contextData['sources'],
-                'status' => 'local_rag'
-            ];
+            $apiAnswer = self::callGeminiApi($systemPrompt, $userPrompt, $geminiKey);
+            if (!empty($apiAnswer)) {
+                return [
+                    'answer' => $apiAnswer,
+                    'sources' => $context['sources'],
+                    'status' => 'gemini_success'
+                ];
+            }
         }
 
-        $response = self::callGeminiApi($systemPrompt, $userPrompt, $apiKey);
+        // 5. Intelligens helyi levéltári válaszképző (Rule-based Archival Engine)
+        $localAnswer = self::synthesizeLocalAnswer($context, $question);
 
         return [
-            'answer' => $response ?: __('ai.no_source_answer'),
-            'sources' => $contextData['sources'],
-            'status' => 'success'
+            'answer' => $localAnswer,
+            'sources' => $context['sources'],
+            'status' => 'local_rag_success'
         ];
     }
 
     /**
-     * Hitelesített kontextus keresése a levéltári iratokban
+     * Hitelesített adatok és kontextus keresése (kifejezések, ragozatlan szótövek és ékezetmentes egyezés)
      */
-    private static function retrieveContext(string $query): array
+    private static function retrieveArchivalContext(array $searchTerms, string $origQuery): array
     {
-        $keywords = array_filter(explode(' ', mb_strtolower($query)), fn($w) => mb_strlen($w) > 2);
-        if (empty($keywords)) {
-            return ['items' => [], 'formatted_text' => '', 'sources' => []];
-        }
-
-        // Keresés az ellenőrzött állítások (Claims) és a dokumentumoldalak (Pages) között
-        $sql = "SELECT c.id, c.quote, c.statement, d.archive_code, d.title as doc_title, p.page_number
-                FROM claims c
-                JOIN source_documents d ON c.document_id = d.id
-                JOIN pages p ON c.page_id = p.id
-                WHERE c.status = 'ellenorzott'
-                ORDER BY c.created_at DESC
-                LIMIT 10";
-
-        $claims = Database::query($sql);
-        $items = [];
+        $claims = [];
+        $entities = [];
         $sources = [];
-        $formatted = "";
+        $formattedText = "";
 
-        // Szűrés a kulcsszavakra
-        foreach ($claims as $c) {
-            $text = mb_strtolower($c['quote'] . ' ' . $c['statement'] . ' ' . $c['archive_code']);
+        // 1. Állítások keresése (Claims)
+        $allClaims = Database::query(
+            "SELECT c.*, d.archive_code, d.title as doc_title, p.page_number
+             FROM claims c
+             JOIN source_documents d ON c.document_id = d.id
+             JOIN pages p ON c.page_id = p.id
+             WHERE c.status = 'ellenorzott'
+             ORDER BY c.created_at ASC"
+        );
+
+        foreach ($allClaims as $c) {
+            $haystack = ' ' . mb_strtolower($c['quote'] . ' ' . $c['statement'] . ' ' . $c['archive_code'] . ' ' . $c['doc_title']) . ' ';
+            $haystackNorm = self::stripAccents($haystack);
+
             $match = false;
-            foreach ($keywords as $kw) {
-                if (mb_strpos($text, $kw) !== false) {
+            foreach ($searchTerms as $term) {
+                if (preg_match('/(?:\b|[^\p{L}\p{N}])' . preg_quote($term, '/') . '(?:\b|[^\p{L}\p{N}])/ui', $haystack)
+                    || preg_match('/(?:\b|[^\p{L}\p{N}])' . preg_quote($term, '/') . '(?:\b|[^\p{L}\p{N}])/ui', $haystackNorm)) {
                     $match = true;
                     break;
                 }
             }
 
             if ($match) {
-                $items[] = $c;
+                $claims[] = $c;
                 $ref = "[{$c['archive_code']}, {$c['page_number']}. o.]";
                 $sources[] = [
                     'archive_code' => $c['archive_code'],
@@ -117,37 +147,133 @@ class AiService
                     'title' => $c['doc_title'],
                     'quote' => $c['quote']
                 ];
-                $formatted .= "Forrás {$ref}:\n"
+                $formattedText .= "Forrás {$ref}:\n"
                     . "Dokumentum: {$c['doc_title']}\n"
                     . "Állítás: {$c['statement']}\n"
-                    . "Szó szerinti idézet: \"{$c['quote']}\"\n\n";
+                    . "Idézet: \"{$c['quote']}\"\n\n";
+            }
+        }
+
+        // 2. Entitások és szerepek keresése (Entities & Roles)
+        $allEntities = Database::query(
+            "SELECT e.*, r.role_type, d.archive_code, d.title as doc_title
+             FROM entities e
+             LEFT JOIN roles r ON e.id = r.entity_id
+             LEFT JOIN source_documents d ON r.document_id = d.id"
+        );
+
+        foreach ($allEntities as $ent) {
+            $haystack = ' ' . mb_strtolower($ent['canonical_name'] . ' ' . $ent['aliases']) . ' ';
+            $haystackNorm = self::stripAccents($haystack);
+
+            $match = false;
+            foreach ($searchTerms as $term) {
+                if (preg_match('/(?:\b|[^\p{L}\p{N}])' . preg_quote($term, '/') . '(?:\b|[^\p{L}\p{N}])/ui', $haystack)
+                    || preg_match('/(?:\b|[^\p{L}\p{N}])' . preg_quote($term, '/') . '(?:\b|[^\p{L}\p{N}])/ui', $haystackNorm)) {
+                    $match = true;
+                    break;
+                }
+            }
+            if ($match) {
+                $entities[] = $ent;
             }
         }
 
         return [
-            'items' => $items,
-            'formatted_text' => $formatted,
-            'sources' => $sources
+            'claims' => $claims,
+            'entities' => $entities,
+            'sources' => array_values(array_unique($sources, SORT_REGULAR)),
+            'formatted_text' => $formattedText
         ];
     }
 
     /**
-     * Szabályalapú válaszképző, ha nincs külső API kulcs beállítva
+     * Hiteles levéltári válasz szintetizálása külső API nélkül
      */
-    private static function generateRuleBasedAnswer(array $items, string $query): string
+    private static function synthesizeLocalAnswer(array $context, string $question): string
     {
-        if (empty($items)) {
+        $claims = $context['claims'];
+        $entities = $context['entities'];
+
+        if (empty($claims) && empty($entities)) {
             return __('ai.no_source_answer');
         }
 
-        $first = $items[0];
-        $ref = "[{$first['archive_code']}, {$first['page_number']}. o.]";
-        return "A fellelhető levéltári iratok alapján: " . $first['statement'] . " " . $ref . "\n\n"
-             . "Szó szerinti idézet az aktából: \"" . $first['quote'] . "\" " . $ref;
+        $lines = [];
+        $lines[] = "A rendelkezésre álló orosházi levéltári iratok és ellenőrzött állítások alapján:";
+        $lines[] = "";
+
+        if (!empty($claims)) {
+            foreach ($claims as $i => $c) {
+                $ref = "[{$c['archive_code']}, {$c['page_number']}. o.]";
+                $num = ($i + 1) . ".";
+                $lines[] = "{$num} **Állítás:** " . $c['statement'] . " " . $ref;
+                $lines[] = "   *Szó szerinti idézet az aktából:* »" . $c['quote'] . "« " . $ref;
+                $lines[] = "";
+            }
+        } elseif (!empty($entities)) {
+            $ent = $entities[0];
+            $meta = json_decode($ent['metadata'] ?? '{}', true) ?: [];
+            $roleLabel = !empty($ent['role_type']) ? __("roles.{$ent['role_type']}") : "Ismert orosházi személy/intézmény";
+
+            $lines[] = "**Név/Megnevezés:** " . $ent['canonical_name'];
+            $lines[] = "**Szerepkör a forrásokban:** " . $roleLabel;
+            if (!empty($meta['occupation'])) {
+                $lines[] = "**Foglalkozás:** " . $meta['occupation'];
+            }
+            if (!empty($ent['archive_code'])) {
+                $lines[] = "**Kapcsolódó irat:** " . $ent['archive_code'] . " – " . ($ent['doc_title'] ?? '');
+            }
+        }
+
+        $lines[] = "> ℹ️ *Módszertani alapelv:* Az iratokban való szereplés önmagában soha nem jelent ügynöki minősítést. A megfigyelt személyek az állambiztonsági megfigyelés áldozatai.";
+
+        return implode("\n", $lines);
     }
 
     /**
-     * Gemini 1.5 Flash API hívása HTTP cURL alapon
+     * Magyar ragozási végződések eltávolítása egyszerű szótő képzéshez
+     */
+    private static function stemHungarian(string $word): string
+    {
+        $suffixes = [
+            'ról', 'ről', 'rol', 'rel',
+            'val', 'vel',
+            'ban', 'ben',
+            'nak', 'nek',
+            'hoz', 'hez', 'höz',
+            'nál', 'nél', 'nal', 'nel',
+            'tól', 'től', 'tol', 'tel',
+            'ért', 'ert',
+            'ból', 'ből', 'bol', 'bel',
+            'on', 'en', 'ön',
+            'ot', 'et', 'öt', 'at',
+            'ra', 're'
+        ];
+        foreach ($suffixes as $s) {
+            if (mb_strlen($word) > mb_strlen($s) + 2 && str_ends_with($word, $s)) {
+                return mb_substr($word, 0, mb_strlen($word) - mb_strlen($s));
+            }
+        }
+        return $word;
+    }
+
+    /**
+     * Ékezetek eltávolítása normalizált összehasonlításhoz
+     */
+    private static function stripAccents(string $str): string
+    {
+        $unaccent = [
+            'á' => 'a', 'é' => 'e', 'í' => 'i', 'ó' => 'o', 'ö' => 'o', 'ő' => 'o',
+            'ú' => 'u', 'ü' => 'u', 'ű' => 'u',
+            'Á' => 'a', 'É' => 'e', 'Í' => 'i', 'Ó' => 'o', 'Ö' => 'o', 'Ő' => 'o',
+            'Ú' => 'u', 'Ü' => 'u', 'Ű' => 'u'
+        ];
+        return strtr($str, $unaccent);
+    }
+
+    /**
+     * Gemini API hívás HTTP cURL alapon
      */
     private static function callGeminiApi(string $systemPrompt, string $userPrompt, string $apiKey): ?string
     {

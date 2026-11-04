@@ -41,27 +41,36 @@ $siteConfig = \NyitottMult\Config::getSiteConfig();
         <nav class="main-nav">
             <a href="/" class="<?= $currentUri === '/' ? 'active' : '' ?>"><?= __('nav.home') ?></a>
             <a href="/terkep" class="<?= str_starts_with($currentUri, '/terkep') ? 'active' : '' ?>">🗺️ <?= __('nav.map') ?></a>
-            <a href="/kereses" class="<?= str_starts_with($currentUri, '/kereses') ? 'active' : '' ?>">🔍 <?= __('nav.search') ?></a>
-            <a href="/dokumentumok" class="<?= str_starts_with($currentUri, '/dokumentumok') ? 'active' : '' ?>">📄 <?= __('nav.documents') ?></a>
-            <a href="/entitasok" class="<?= str_starts_with($currentUri, '/entitasok') ? 'active' : '' ?>">👥 <?= __('nav.entities') ?></a>
+            <a href="/dokumentumok" class="<?= (str_starts_with($currentUri, '/dokumentumok') || str_starts_with($currentUri, '/kereses') || str_starts_with($currentUri, '/entitasok')) ? 'active' : '' ?>">📄 Iratok & Kereső</a>
             <a href="/bizonyitekterkep" class="<?= str_starts_with($currentUri, '/bizonyitekterkep') ? 'active' : '' ?>">⚖️ <?= __('nav.evidence_map') ?></a>
             <a href="/kapcsolati-halo" class="<?= str_starts_with($currentUri, '/kapcsolati-halo') ? 'active' : '' ?>">🕸️ <?= __('nav.network') ?></a>
-            <a href="/idovonal" class="<?= str_starts_with($currentUri, '/idovonal') ? 'active' : '' ?>">⏳ <?= __('nav.timeline') ?></a>
-            <a href="/ai-kutato" class="<?= str_starts_with($currentUri, '/ai-kutato') ? 'active' : '' ?>">🤖 <?= __('nav.ai_historian') ?></a>
-            <a href="/tortenetek" class="<?= str_starts_with($currentUri, '/tortenetek') ? 'active' : '' ?>">📖 <?= __('nav.stories') ?></a>
-            <a href="/kozosseg" class="<?= str_starts_with($currentUri, '/kozosseg') ? 'active' : '' ?>"><?= __('nav.community') ?></a>
-            <a href="/helyesbites" class="<?= str_starts_with($currentUri, '/helyesbites') ? 'active' : '' ?>">📝 <?= __('nav.correction') ?></a>
+            <a href="/ai-kutato" class="<?= (str_starts_with($currentUri, '/ai-kutato') || str_starts_with($currentUri, '/ai-tortenesz')) ? 'active' : '' ?>">🤖 <?= __('nav.ai_historian') ?></a>
             
+            <!-- További hasznos oldalak menü -->
+            <div class="nav-dropdown" style="position: relative; display: inline-block;">
+                <button type="button" class="nav-dropbtn" style="background: none; border: none; font-size: 0.9rem; font-weight: 500; color: #334155; cursor: pointer; padding: 0.5rem 0.4rem; display: flex; align-items: center; gap: 0.25rem;">
+                    Továbbiak ▾
+                </button>
+                <div class="dropdown-content" style="display: none; position: absolute; right: 0; background-color: #ffffff; min-width: 210px; box-shadow: 0px 10px 25px rgba(0,0,0,0.15); border-radius: var(--radius); z-index: 1000; border: 1px solid var(--border); padding: 0.4rem 0;">
+                    <a href="/idovonal" style="display: block; padding: 0.5rem 1rem; color: #334155; text-decoration: none; font-size: 0.85rem;">⏳ Idővonal (1945–1990)</a>
+                    <a href="/tortenetek" style="display: block; padding: 0.5rem 1rem; color: #334155; text-decoration: none; font-size: 0.85rem;">📖 Helytörténeti Sztorik</a>
+                    <a href="/kozosseg" style="display: block; padding: 0.5rem 1rem; color: #334155; text-decoration: none; font-size: 0.85rem;">🤝 Közösségi Beküldés</a>
+                    <a href="/helyesbites" style="display: block; padding: 0.5rem 1rem; color: #334155; text-decoration: none; font-size: 0.85rem;">📝 Helyesbítés & Kérelem</a>
+                    <a href="/atlathatosag" style="display: block; padding: 0.5rem 1rem; color: #334155; text-decoration: none; font-size: 0.85rem;">📊 Átláthatóság & Statisztika</a>
+                    <a href="/api-docs" style="display: block; padding: 0.5rem 1rem; color: #334155; text-decoration: none; font-size: 0.85rem;">⚡ Nyílt REST API</a>
+                </div>
+            </div>
+
             <?php if (Auth::check()): ?>
-                <a href="/kutato" class="btn btn-warning" style="padding: 0.3rem 0.6rem; font-size: 0.8rem;">🔒 <?= __('nav.researcher') ?></a>
+                <a href="/kutato" class="btn btn-warning" style="padding: 0.35rem 0.75rem; font-size: 0.8rem; margin-left: 0.5rem;">🔒 <?= __('nav.researcher') ?></a>
             <?php else: ?>
-                <a href="/kutato/login" style="color: var(--text-muted); font-size: 0.8rem;">Belépés</a>
+                <a href="/kutato/login" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.8rem; margin-left: 0.5rem;">Kutatói Belépés</a>
             <?php endif; ?>
 
             <!-- Nyelvválasztó -->
             <div style="margin-left: 0.5rem; display: flex; gap: 0.25rem;">
-                <a href="?lang=hu" style="padding: 0.2rem 0.4rem; font-size: 0.75rem; <?= $currentLang === 'hu' ? 'font-weight: bold; background: #e2e8f0;' : '' ?>">HU</a>
-                <a href="?lang=en" style="padding: 0.2rem 0.4rem; font-size: 0.75rem; <?= $currentLang === 'en' ? 'font-weight: bold; background: #e2e8f0;' : '' ?>">EN</a>
+                <a href="?lang=hu" style="padding: 0.2rem 0.4rem; font-size: 0.75rem; <?= $currentLang === 'hu' ? 'font-weight: bold; background: #e2e8f0; border-radius: 4px;' : '' ?>">HU</a>
+                <a href="?lang=en" style="padding: 0.2rem 0.4rem; font-size: 0.75rem; <?= $currentLang === 'en' ? 'font-weight: bold; background: #e2e8f0; border-radius: 4px;' : '' ?>">EN</a>
             </div>
         </nav>
     </div>

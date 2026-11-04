@@ -39,10 +39,11 @@ $orgs = \NyitottMult\Config::getOrganizations();
             <label style="display: flex; align-items: center; gap: 0.35rem; cursor: pointer;">
                 <input type="checkbox" id="toggleDistricts" checked> 🏘️ Városrészek
             </label>
-            <label style="display: flex; align-items: center; gap: 0.35rem; cursor: pointer;">
-                <input type="checkbox" id="toggleStreets" checked> 🛣️ Korabeli Utcanevek
-            </label>
         </div>
+    </div>
+    <!-- Korabeli utcanevek dinamikus sávja -->
+    <div id="street-history-box" style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: #f8fafc; border: 1px solid var(--border); border-radius: var(--radius); font-size: 0.85rem; color: #334155;">
+        ⏳ <strong>1960-as évek korabeli elnevezései:</strong> Lenin tér (ma Szabadság tér), Beloiannisz utca (ma Kossuth Lajos utca)
     </div>
 </div>
 

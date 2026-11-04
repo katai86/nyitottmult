@@ -115,6 +115,23 @@ nav.main-nav a:hover, nav.main-nav a.active {
   color: var(--primary);
 }
 
+/* Nav Dropdown */
+.nav-dropdown {
+  position: relative;
+  display: inline-block;
+}
+.nav-dropdown:hover .dropdown-content,
+.nav-dropdown:focus-within .dropdown-content {
+  display: block !important;
+}
+.dropdown-content a {
+  border-radius: 0 !important;
+}
+.dropdown-content a:hover {
+  background-color: #f1f5f9 !important;
+  color: var(--primary) !important;
+}
+
 /* Gombok */
 .btn {
   display: inline-flex;
