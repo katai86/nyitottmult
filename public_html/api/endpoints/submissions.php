@@ -39,6 +39,16 @@ $ok = Database::execute(
 );
 
 if ($ok) {
+    // Értesítő e-mail az adminisztrátornak az új lakossági beküldésről
+    $adminMail = defined('ADMIN_EMAIL') ? ADMIN_EMAIL : 'hello@kataiattila.hu';
+    $subjectAdmin = "[Nyitott Múlt] Új közösségi kutatási anyag érkezett";
+    $bodyAdmin = "<h2>Új kutatási anyag beküldve moderációra</h2>"
+        . "<p><strong>Beküldő:</strong> " . htmlspecialchars($name) . " (" . htmlspecialchars($email) . ")</p>"
+        . "<p><strong>Típus:</strong> " . htmlspecialchars($type) . "</p>"
+        . "<p><strong>Cím:</strong> " . htmlspecialchars($title) . "</p>"
+        . "<hr><p><strong>Leírás / Visszaemlékezés:</strong><br>" . nl2br(htmlspecialchars($desc)) . "</p>";
+    \NyitottMult\MailService::send($adminMail, $subjectAdmin, $bodyAdmin);
+
     echo json_encode(['success' => true, 'id' => $id, 'message' => 'Submission received into moderation queue'], JSON_PRETTY_PRINT);
 } else {
     http_response_code(500);

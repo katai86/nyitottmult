@@ -27,6 +27,15 @@ define('AI_PROVIDER', getenv('AI_PROVIDER') ?: 'gemini');
 define('GEMINI_API_KEY', getenv('GEMINI_API_KEY') ?: '');
 define('OPENAI_API_KEY', getenv('OPENAI_API_KEY') ?: '');
 
+// SMTP E-mail Beállítások
+define('SMTP_HOST', getenv('SMTP_HOST') ?: 'mail.pelda.hu');
+define('SMTP_PORT', (int)(getenv('SMTP_PORT') ?: 587));
+define('SMTP_USER', getenv('SMTP_USER') ?: 'ertesito@pelda.hu');
+define('SMTP_PASS', getenv('SMTP_PASS') ?: 'Jelszo123!');
+define('SMTP_FROM', getenv('SMTP_FROM') ?: 'ertesito@pelda.hu');
+define('SMTP_FROM_NAME', 'Nyitott Múlt');
+define('ADMIN_EMAIL', getenv('ADMIN_EMAIL') ?: 'admin@pelda.hu');
+
 // Adatvédelmi motor (2026. évi LI. tv. – halál éve + 5 év)
 define('PRIVACY_DEATH_PLUS_YEARS', 5);
 
