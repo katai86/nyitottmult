@@ -9,20 +9,24 @@ document.addEventListener('DOMContentLoaded', function () {
     fetch('/api/v1/network/graph')
         .then(res => res.json())
         .then(data => {
-            initCytoscape(data.elements || []);
+            if (data.elements && data.elements.length > 0) {
+                initCytoscape(data.elements);
+            } else {
+                showEmptyNetwork();
+            }
         })
         .catch(err => {
             console.error('Hiba a kapcsolati gráf betöltésekor:', err);
-            // Fallback beépített minta adatok
-            initCytoscape([
-                { data: { id: 'e1', label: 'MINTA Kovács János ("Homok")', type: 'agent' } },
-                { data: { id: 'e2', label: 'MINTA Dr. Szabó István', type: 'observed' } },
-                { data: { id: 'e3', label: 'MINTA Tóth Béla r. fhdgy.', type: 'officer' } },
-                { data: { id: 'e4', label: 'Orosházi PNK (1959)', type: 'org' } },
-                { data: { id: 'rel1', source: 'e3', target: 'e1', label: 'beszervezte (1959)', quote: '1959. április 12-én szervezte be hazafias alapon.' } },
-                { data: { id: 'rel2', source: 'e1', target: 'e2', label: 'megfigyelte (1960)', quote: '1960. szeptember 18-i jelentés a Szabadság téri presszóból.' } }
-            ]);
+            showEmptyNetwork();
         });
+
+    function showEmptyNetwork() {
+        container.innerHTML = '<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; min-height: 380px; color: #64748b; font-size: 0.95rem; text-align: center; padding: 2rem;">' +
+            '<div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🕸️</div>' +
+            '<div style="font-weight: 700; color: #0f172a; margin-bottom: 0.25rem;">Nincsenek jóváhagyott kapcsolati adatok</div>' +
+            '<div style="font-size: 0.85rem; max-width: 480px; line-height: 1.5; color: #64748b;">A hálózatban kizárólag a forráskritikailag igazolt, két lektor által jóváhagyott levéltári állítások kapcsolatai jelenhetnek meg a 2026. évi LI. törvény rendelkezéseinek megfelelően.</div>' +
+            '</div>';
+    }
 
     function initCytoscape(elements) {
         const cy = cytoscape({

@@ -47,13 +47,19 @@ Router::get('/api-dokumentacio', 'api_docs');
 
 // Zárt kutatói útvonalak
 Router::get('/kutato', 'researcher/dashboard');
+Router::post('/kutato', 'researcher/dashboard');
 Router::get('/kutato/login', 'researcher/login');
 Router::post('/kutato/login', 'researcher/login');
 Router::get('/kutato/belepes', 'researcher/login');
 Router::post('/kutato/belepes', 'researcher/login');
 Router::get('/kutato/detektiv', 'researcher/detective');
+Router::post('/kutato/detektiv', 'researcher/detective');
 Router::get('/kutato/ellenorzes', 'researcher/verification');
 Router::post('/kutato/ellenorzes', 'researcher/verification');
+Router::get('/kutato/moderacio', 'researcher/moderation');
+Router::post('/kutato/moderacio', 'researcher/moderation');
+Router::get('/kutato/beadvanyok', 'researcher/moderation');
+Router::post('/kutato/beadvanyok', 'researcher/moderation');
 
 // Kérés kiszolgálása
 Router::dispatch();

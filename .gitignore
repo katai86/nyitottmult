@@ -13,6 +13,7 @@ tools/run_import_on_server.py
 tools/import_nyitottaktak.py
 tools/update_server.py
 tools/run_probe.py
+tools/purge_*.py
 tools/apply_*.py
 tools/test_*.py
 tools/probe_*.py

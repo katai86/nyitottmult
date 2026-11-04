@@ -137,7 +137,7 @@ $stats = [
     </div>
 </section>
 
-<!-- Kiemelt Minta Levéltári Iratok -->
+<!-- Kiemelt Levéltári Iratok -->
 <section>
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
         <h2 style="font-size: 1.5rem; font-weight: 700; color: #0f172a;">Legfrissebb Ellenőrzött Forrásiratok</h2>

@@ -46,7 +46,7 @@ $siteConfig = \NyitottMult\Config::getSiteConfig();
 
         <div style="border-top: 1px solid #1e293b; padding-top: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; font-size: 0.8rem;">
             <div>
-                &copy; 2026 <strong>Nyitott Múlt</strong>. Licenc: <a href="https://www.gnu.org/licenses/agpl-3.0.html" target="_blank" rel="noopener">AGPL-3.0</a> (Kód) és <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener">CC0-1.0</a> (Mintaadatok és Névtár).
+                &copy; 2026 <strong>Nyitott Múlt</strong>. Licenc: <a href="https://www.gnu.org/licenses/agpl-3.0.html" target="_blank" rel="noopener">AGPL-3.0</a> (Kód) és <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener">CC0-1.0</a> (Közkincs / Nyílt Névtár).
             </div>
             <div>
                 Első telepítés: <em>Orosháza titkos múltja</em>. Kezdeményezte: <strong>Kátai Attila</strong>.

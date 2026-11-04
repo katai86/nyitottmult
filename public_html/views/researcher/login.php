@@ -43,13 +43,12 @@ include dirname(__DIR__) . '/layout/header.php';
         <form method="POST" action="/kutato/login">
             <div class="form-group">
                 <label class="form-label">Felhasználónév vagy E-mail</label>
-                <input type="text" name="username" required class="form-input" placeholder="admin vagy kutato" value="admin">
+                <input type="text" name="username" required class="form-input" placeholder="pl. hello@kataiattila.hu vagy kataiattila" autocomplete="username">
             </div>
 
             <div class="form-group">
                 <label class="form-label">Jelszó</label>
-                <input type="password" name="password" required class="form-input" placeholder="Jelszó" value="MintaJelszo2026!">
-                <small style="color: var(--text-muted); font-size: 0.75rem;">Minta demo jelszó: <code>MintaJelszo2026!</code></small>
+                <input type="password" name="password" required class="form-input" placeholder="Jelszó" autocomplete="current-password">
             </div>
 
             <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.75rem; font-size: 0.95rem;">
