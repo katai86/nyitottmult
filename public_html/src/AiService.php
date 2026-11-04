@@ -110,12 +110,11 @@ class AiService
      */
     private static function retrieveArchivalContext(array $searchTerms, string $origQuery): array
     {
-        $claims = [];
         $entities = [];
         $sources = [];
         $formattedText = "";
 
-        // 1. Állítások keresése (Claims)
+        // 1. Állítások keresése és pontozása (Claims Scoring)
         $allClaims = Database::query(
             "SELECT c.*, d.archive_code, d.title as doc_title, p.page_number
              FROM claims c
@@ -125,33 +124,66 @@ class AiService
              ORDER BY c.created_at ASC"
         );
 
+        $origCleanNorm = self::stripAccents(mb_strtolower(preg_replace('/[?.,!;:\'\"()\[\]{}]/u', ' ', $origQuery)));
+        $origCleanWords = array_values(array_filter(explode(' ', $origCleanNorm), fn($w) => mb_strlen($w) >= 3));
+
+        $scoredClaims = [];
         foreach ($allClaims as $c) {
             $haystack = ' ' . mb_strtolower($c['quote'] . ' ' . $c['statement'] . ' ' . $c['archive_code'] . ' ' . $c['doc_title']) . ' ';
             $haystackNorm = self::stripAccents($haystack);
 
-            $match = false;
-            foreach ($searchTerms as $term) {
-                if (preg_match('/(?:\b|[^\p{L}\p{N}])' . preg_quote($term, '/') . '(?:\b|[^\p{L}\p{N}])/ui', $haystack)
-                    || preg_match('/(?:\b|[^\p{L}\p{N}])' . preg_quote($term, '/') . '(?:\b|[^\p{L}\p{N}])/ui', $haystackNorm)) {
-                    $match = true;
-                    break;
+            $score = 0;
+            // Teljes keresőkifejezés pontos egyezése (pl. "adász zoltán")
+            if (!empty($origCleanNorm) && mb_strlen($origCleanNorm) >= 4 && str_contains($haystackNorm, $origCleanNorm)) {
+                $score += 25;
+            }
+
+            // Kérdés szavainak egyezése
+            $matchedWords = 0;
+            foreach ($origCleanWords as $w) {
+                if (preg_match('/(?:\b|[^\p{L}\p{N}])' . preg_quote($w, '/') . '(?:\b|[^\p{L}\p{N}])/ui', $haystackNorm)) {
+                    $score += 6;
+                    $matchedWords++;
                 }
             }
 
-            if ($match) {
-                $claims[] = $c;
-                $ref = "[{$c['archive_code']}, {$c['page_number']}. o.]";
-                $sources[] = [
-                    'archive_code' => $c['archive_code'],
-                    'page_number' => $c['page_number'],
-                    'title' => $c['doc_title'],
-                    'quote' => $c['quote']
-                ];
-                $formattedText .= "Forrás {$ref}:\n"
-                    . "Dokumentum: {$c['doc_title']}\n"
-                    . "Állítás: {$c['statement']}\n"
-                    . "Idézet: \"{$c['quote']}\"\n\n";
+            // Ha több kulcsszó volt, és mindegyik szerepel ebben az állításban: kiemelt bónusz
+            if (count($origCleanWords) > 1 && $matchedWords === count($origCleanWords)) {
+                $score += 20;
             }
+
+            // Szótövek és szinonimák egyezése
+            foreach ($searchTerms as $term) {
+                if (preg_match('/(?:\b|[^\p{L}\p{N}])' . preg_quote($term, '/') . '(?:\b|[^\p{L}\p{N}])/ui', $haystack)
+                    || preg_match('/(?:\b|[^\p{L}\p{N}])' . preg_quote($term, '/') . '(?:\b|[^\p{L}\p{N}])/ui', $haystackNorm)) {
+                    $score += 1;
+                }
+            }
+
+            if ($score > 0) {
+                $c['_score'] = $score;
+                $scoredClaims[] = $c;
+            }
+        }
+
+        // Relevancia szerinti csökkenő rendezés
+        usort($scoredClaims, fn($a, $b) => $b['_score'] <=> $a['_score']);
+
+        // Legrelevánsabb állítások (max. 5) kiválasztása
+        $topClaims = array_slice($scoredClaims, 0, 5);
+
+        foreach ($topClaims as $c) {
+            $ref = "[{$c['archive_code']}, {$c['page_number']}. o.]";
+            $sources[] = [
+                'archive_code' => $c['archive_code'],
+                'page_number' => $c['page_number'],
+                'title' => $c['doc_title'],
+                'quote' => $c['quote']
+            ];
+            $formattedText .= "Forrás {$ref}:\n"
+                . "Dokumentum: {$c['doc_title']}\n"
+                . "Állítás: {$c['statement']}\n"
+                . "Idézet: \"{$c['quote']}\"\n\n";
         }
 
         // 2. Entitások és szerepek keresése (Entities & Roles)
@@ -180,7 +212,7 @@ class AiService
         }
 
         return [
-            'claims' => $claims,
+            'claims' => $topClaims,
             'entities' => $entities,
             'sources' => array_values(array_unique($sources, SORT_REGULAR)),
             'formatted_text' => $formattedText

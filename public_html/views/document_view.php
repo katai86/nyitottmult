@@ -41,10 +41,15 @@ include __DIR__ . '/layout/header.php';
 ?>
 
 <div style="margin-bottom: 1.5rem;">
-    <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.5rem;">
+    <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap;">
         <a href="/dokumentumok" class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.25rem 0.6rem;">&larr; Vissza az iratokhoz</a>
         <span class="badge badge-verified"><?= htmlspecialchars($doc['document_type']) ?></span>
         <span style="font-family: monospace; font-size: 0.85rem; color: #64748b;"><?= htmlspecialchars($doc['archive_code']) ?></span>
+        <?php if (!empty($doc['original_url'])): ?>
+            <a href="<?= htmlspecialchars($doc['original_url']) ?>" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.25rem 0.6rem; background: #e0f2fe; color: #0369a1; border-color: #bae6fd;">
+                🏛️ Hivatalos ÁBTL Nyitott Akták &rarr;
+            </a>
+        <?php endif; ?>
     </div>
     <h1 style="font-size: 1.75rem; font-weight: 800; color: #0f172a; margin-bottom: 0.25rem;">
         <?= htmlspecialchars($doc['title']) ?>

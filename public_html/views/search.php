@@ -9,21 +9,15 @@ use NyitottMult\PrivacyEngine;
 $q = trim($_GET['q'] ?? '');
 $typeFilter = $_GET['type'] ?? '';
 $roleFilter = $_GET['role'] ?? '';
+$page = max(1, (int)($_GET['page'] ?? 1));
+$perPage = 25;
+$offset = ($page - 1) * $perPage;
 
-$results = [];
-
-$sql = "SELECT e.*, pr.status as privacy_status, pr.death_year, pr.is_publicly_visible,
-               r.role_type, d.title as doc_title, d.archive_code
-        FROM entities e
-        LEFT JOIN privacy_records pr ON e.id = pr.entity_id
-        LEFT JOIN roles r ON e.id = r.entity_id
-        LEFT JOIN source_documents d ON r.document_id = d.id
-        WHERE 1=1";
-
+$whereSql = "WHERE 1=1";
 $params = [];
 
 if ($q !== '') {
-    $sql .= " AND (e.canonical_name LIKE :q OR e.aliases LIKE :q2 OR d.title LIKE :q3 OR d.archive_code LIKE :q4)";
+    $whereSql .= " AND (e.canonical_name LIKE :q OR e.aliases LIKE :q2 OR d.title LIKE :q3 OR d.archive_code LIKE :q4)";
     $params['q'] = '%' . $q . '%';
     $params['q2'] = '%' . $q . '%';
     $params['q3'] = '%' . $q . '%';
@@ -31,17 +25,40 @@ if ($q !== '') {
 }
 
 if ($typeFilter !== '') {
-    $sql .= " AND e.type = :type";
+    $whereSql .= " AND e.type = :type";
     $params['type'] = $typeFilter;
 }
 
 if ($roleFilter !== '') {
-    $sql .= " AND r.role_type = :role";
+    $whereSql .= " AND r.role_type = :role";
     $params['role'] = $roleFilter;
 }
 
-$sql .= " GROUP BY e.id ORDER BY e.canonical_name ASC LIMIT 50";
+$countSql = "SELECT COUNT(DISTINCT e.id) as total
+             FROM entities e
+             LEFT JOIN roles r ON e.id = r.entity_id
+             LEFT JOIN source_documents d ON r.document_id = d.id
+             {$whereSql}";
+$totalResults = (int)(Database::queryOne($countSql, $params)['total'] ?? 0);
+$totalPages = max(1, (int)ceil($totalResults / $perPage));
+if ($page > $totalPages) {
+    $page = $totalPages;
+    $offset = ($page - 1) * $perPage;
+}
+
+$sql = "SELECT e.*, pr.status as privacy_status, pr.death_year, pr.is_publicly_visible,
+               r.role_type, d.title as doc_title, d.archive_code
+        FROM entities e
+        LEFT JOIN privacy_records pr ON e.id = pr.entity_id
+        LEFT JOIN roles r ON e.id = r.entity_id
+        LEFT JOIN source_documents d ON r.document_id = d.id
+        {$whereSql}
+        GROUP BY e.id 
+        ORDER BY e.canonical_name ASC 
+        LIMIT {$perPage} OFFSET {$offset}";
+
 $rawResults = Database::query($sql, $params);
+$results = [];
 
 foreach ($rawResults as $row) {
     $results[] = PrivacyEngine::sanitizeEntityForPublic($row, [
@@ -57,7 +74,8 @@ foreach ($rawResults as $row) {
         <?= __('nav.search') ?>
     </h1>
     <p style="color: var(--text-muted); font-size: 0.95rem;">
-        Keresés nevek, fedőnevek, orosházi intézmények, iratjelzetek és szerepkörök között.
+        Keresés orosházi személyek, fedőnevek, intézmények, iratjelzetek és levéltári szerepkörök között.
+        Összesen: <strong><?= $totalResults ?></strong> nyilvántartott entitás.
     </p>
 </div>
 
@@ -70,6 +88,9 @@ foreach ($rawResults as $row) {
         <button type="submit" class="btn btn-primary" style="padding-left: 1.5rem; padding-right: 1.5rem;">
             🔍 Keresés
         </button>
+        <?php if ($q !== '' || $typeFilter !== '' || $roleFilter !== ''): ?>
+            <a href="/kereses" class="btn btn-secondary">Szűrők törlése</a>
+        <?php endif; ?>
     </div>
 
     <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
@@ -98,73 +119,120 @@ foreach ($rawResults as $row) {
 </form>
 
 <!-- Találati lista -->
-<?php if ($q !== '' || $typeFilter !== '' || $roleFilter !== ''): ?>
-    <div style="margin-bottom: 1rem; font-weight: 600; color: var(--text-muted);">
-        <?= __('search.results_count', ['count' => count($results)]) ?>
+<div style="margin-bottom: 1rem; font-weight: 600; color: var(--text-muted); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+    <span>
+        <?= $q !== '' || $typeFilter !== '' || $roleFilter !== '' 
+            ? __('search.results_count', ['count' => $totalResults]) 
+            : "Nyilvántartott személyek és fedőnevek listája ({$totalResults})" ?>
+    </span>
+    <span style="font-size: 0.85rem; font-weight: normal;">
+        Oldal: <?= $page ?> / <?= $totalPages ?>
+    </span>
+</div>
+
+<?php if (empty($results)): ?>
+    <div class="card" style="text-align: center; padding: 3rem;">
+        <div style="font-size: 2.5rem; margin-bottom: 1rem;">🔍</div>
+        <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.5rem;">
+            <?= __('search.no_results') ?>
+        </h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">
+            Próbáljon kevesebb feltételt megadni vagy használjon névváltozatot.
+        </p>
+    </div>
+<?php else: ?>
+    <div class="grid grid-cols-1" style="gap: 0.75rem;">
+        <?php foreach ($results as $item): ?>
+            <div class="card" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; padding: 1rem 1.25rem;">
+                <div>
+                    <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.35rem; flex-wrap: wrap;">
+                        <span class="badge" style="background: #e2e8f0; color: #1e293b;">
+                            <?= htmlspecialchars($item['type']) ?>
+                        </span>
+
+                        <?php if (!empty($item['role_type'])): ?>
+                            <?php if ($item['role_type'] === 'beszervezett_halozati_szemely'): ?>
+                                <span class="badge badge-agent"><?= __('roles.beszervezett_halozati_szemely') ?></span>
+                            <?php elseif ($item['role_type'] === 'megfigyelt'): ?>
+                                <span class="badge badge-observed"><?= __('roles.megfigyelt') ?></span>
+                            <?php elseif ($item['role_type'] === 'tiszt'): ?>
+                                <span class="badge badge-officer"><?= __('roles.tiszt') ?></span>
+                            <?php else: ?>
+                                <span class="badge badge-protected"><?= htmlspecialchars($item['role_type']) ?></span>
+                            <?php endif; ?>
+                        <?php endif; ?>
+
+                        <?php if (!empty($item['is_protected'])): ?>
+                            <span class="badge" style="background: #fee2e2; color: #991b1b;">🛡️ Védett személy</span>
+                        <?php endif; ?>
+                    </div>
+
+                    <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--primary); margin-bottom: 0.25rem;">
+                        <?= htmlspecialchars($item['canonical_name']) ?>
+                    </h3>
+
+                    <?php if (!empty($item['aliases']) && $item['aliases'] !== '[]'): ?>
+                        <div style="font-size: 0.8rem; color: #64748b; margin-bottom: 0.25rem;">
+                            Névváltozat / Fedőnév: <strong><?= htmlspecialchars(trim($item['aliases'], '[]"\'')) ?></strong>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if (!empty($item['archive_code'])): ?>
+                        <div style="font-size: 0.85rem; color: var(--text-muted);">
+                            Forrásirat: <span style="font-family: monospace; font-weight: 600;"><?= htmlspecialchars($item['archive_code']) ?></span>
+                            <?= !empty($item['doc_title']) ? '– ' . htmlspecialchars($item['doc_title']) : '' ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+
+                <div>
+                    <?php if (empty($item['is_protected'])): ?>
+                        <a href="/entitasok/<?= urlencode($item['id']) ?>" class="btn btn-secondary" style="font-size: 0.85rem; padding: 0.4rem 0.85rem;">
+                            Adatlap &rarr;
+                        </a>
+                    <?php else: ?>
+                        <span style="font-size: 0.8rem; color: #b91c1c; font-style: italic;">
+                            2026. évi LI. tv. alapján védett
+                        </span>
+                    <?php endif; ?>
+                </div>
+            </div>
+        <?php endforeach; ?>
     </div>
 
-    <?php if (empty($results)): ?>
-        <div class="card" style="text-align: center; padding: 3rem;">
-            <div style="font-size: 2.5rem; margin-bottom: 1rem;">🔍</div>
-            <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.5rem;">
-                <?= __('search.no_results') ?>
-            </h3>
-            <p style="color: var(--text-muted); font-size: 0.9rem;">
-                Próbáljon kevesebb feltételt megadni vagy használjon névváltozatot.
-            </p>
-        </div>
-    <?php else: ?>
-        <div class="grid grid-cols-1">
-            <?php foreach ($results as $item): ?>
-                <div class="card" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
-                    <div>
-                        <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.35rem;">
-                            <span class="badge" style="background: #e2e8f0; color: #1e293b;">
-                                <?= htmlspecialchars($item['type']) ?>
-                            </span>
+    <!-- Lapozó (Pagination) -->
+    <?php if ($totalPages > 1): ?>
+        <div style="display: flex; justify-content: center; align-items: center; gap: 0.35rem; margin-top: 2.5rem; flex-wrap: wrap;">
+            <?php
+            $baseParams = [];
+            if ($q !== '') $baseParams['q'] = $q;
+            if ($typeFilter !== '') $baseParams['type'] = $typeFilter;
+            if ($roleFilter !== '') $baseParams['role'] = $roleFilter;
 
-                            <?php if (!empty($item['role_type'])): ?>
-                                <?php if ($item['role_type'] === 'beszervezett_halozati_szemely'): ?>
-                                    <span class="badge badge-agent"><?= __('roles.beszervezett_halozati_szemely') ?></span>
-                                <?php elseif ($item['role_type'] === 'megfigyelt'): ?>
-                                    <span class="badge badge-observed"><?= __('roles.megfigyelt') ?></span>
-                                <?php elseif ($item['role_type'] === 'tiszt'): ?>
-                                    <span class="badge badge-officer"><?= __('roles.tiszt') ?></span>
-                                <?php else: ?>
-                                    <span class="badge badge-protected"><?= htmlspecialchars($item['role_type']) ?></span>
-                                <?php endif; ?>
-                            <?php endif; ?>
+            $buildPageUrl = function($p) use ($baseParams) {
+                return '/kereses?' . http_build_query(array_merge($baseParams, ['page' => $p]));
+            };
+            ?>
 
-                            <?php if (!empty($item['is_protected'])): ?>
-                                <span class="badge" style="background: #fee2e2; color: #991b1b;">🛡️ Védett személy</span>
-                            <?php endif; ?>
-                        </div>
+            <?php if ($page > 1): ?>
+                <a href="<?= $buildPageUrl(1) ?>" class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.35rem 0.75rem;">&laquo; Első</a>
+                <a href="<?= $buildPageUrl($page - 1) ?>" class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.35rem 0.75rem;">&larr; Előző</a>
+            <?php endif; ?>
 
-                        <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--primary);">
-                            <?= htmlspecialchars($item['canonical_name']) ?>
-                        </h3>
+            <?php
+            $startPage = max(1, $page - 2);
+            $endPage = min($totalPages, $page + 2);
+            for ($p = $startPage; $p <= $endPage; $p++):
+            ?>
+                <a href="<?= $buildPageUrl($p) ?>" class="btn btn-<?= $p === $page ? 'primary' : 'secondary' ?>" style="font-size: 0.8rem; padding: 0.35rem 0.75rem;">
+                    <?= $p ?>
+                </a>
+            <?php endfor; ?>
 
-                        <?php if (!empty($item['archive_code'])): ?>
-                            <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem;">
-                                Forrásirat: <span style="font-family: monospace;"><?= htmlspecialchars($item['archive_code']) ?></span>
-                                (<?= htmlspecialchars($item['doc_title']) ?>)
-                            </div>
-                        <?php endif; ?>
-                    </div>
-
-                    <div>
-                        <?php if (empty($item['is_protected'])): ?>
-                            <a href="/entitasok/<?= urlencode($item['id']) ?>" class="btn btn-secondary" style="font-size: 0.85rem;">
-                                Entitás adatlap &rarr;
-                            </a>
-                        <?php else: ?>
-                            <span style="font-size: 0.8rem; color: #b91c1c; font-style: italic;">
-                                2026. évi LI. tv. alapján védett
-                            </span>
-                        <?php endif; ?>
-                    </div>
-                </div>
-            <?php endforeach; ?>
+            <?php if ($page < $totalPages): ?>
+                <a href="<?= $buildPageUrl($page + 1) ?>" class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.35rem 0.75rem;">Következő &rarr;</a>
+                <a href="<?= $buildPageUrl($totalPages) ?>" class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.35rem 0.75rem;">Utolsó &raquo;</a>
+            <?php endif; ?>
         </div>
     <?php endif; ?>
 <?php endif; ?>

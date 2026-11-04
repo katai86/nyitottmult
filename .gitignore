@@ -9,7 +9,15 @@ tools/deploy_to_directadmin.py
 tools/execute_db_setup.py
 tools/init_db.php
 tools/test_server_php.py
+tools/run_import_on_server.py
+tools/import_nyitottaktak.py
 tools/update_server.py
+tools/run_probe.py
+tools/probe_*.py
+tools/probe_*.php
+tools/ai_out.txt
+data/
+
 
 # Feltöltött valós dokumentumok és iratképek (a repóba nem kerülhet valódi irat!)
 public_html/uploads/docs/*
