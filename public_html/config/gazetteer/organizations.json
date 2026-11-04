@@ -1,0 +1,62 @@
+[
+  {
+    "id": "oroshazi_uveggyar",
+    "name": "Orosházi Síküveggyár",
+    "aliases": ["Orosházi Üveggyár", "Üveggyár", "Magyar Üvegipari Művek Orosházi Gyára"],
+    "type": "industrial",
+    "founded": 1963,
+    "closed": null,
+    "location": [20.6780, 46.5740],
+    "description": "Az orosházi iparosítás kiemelkedő nagyvállalata, intenzív állambiztonsági gazdaságvédelmi ellenőrzés színhelye."
+  },
+  {
+    "id": "oroshazi_ruhagyar",
+    "name": "Orosházi Ruhagyár",
+    "aliases": ["Ruhagyár", "Békéscsabai Ruhagyár Orosházi Telepe"],
+    "type": "industrial",
+    "founded": 1951,
+    "closed": null,
+    "location": [20.6660, 46.5685],
+    "description": "Jelentős női munkaerőt foglalkoztató könnyűipari üzem a belváros szélén."
+  },
+  {
+    "id": "mezogep_oroshaza",
+    "name": "Orosházi Mezőgép Vállalat",
+    "aliases": ["Mezőgép", "Mezőgazdasági Gépjavító Állomás"],
+    "type": "industrial",
+    "founded": 1950,
+    "closed": null,
+    "location": [20.6710, 46.5590],
+    "description": "Mezőgazdasági gépgyártó és javító üzem."
+  },
+  {
+    "id": "tancsics_gimnazium",
+    "name": "Táncsics Mihály Gimnázium",
+    "aliases": ["Orosházi Állami Gimnázium", "Táncsics Gimnázium"],
+    "type": "educational",
+    "founded": 1933,
+    "closed": null,
+    "location": [20.6645, 46.5675],
+    "description": "Orosháza vezető középiskolája, diákmozgalmak és tanári kar állambiztonsági megfigyelésének célpontja (1956 után)."
+  },
+  {
+    "id": "evangelikus_egyhazkozseg",
+    "name": "Orosházi Evangélikus Egyházközség",
+    "aliases": ["Evangélikus Templom", "Orosházi Evangélikus Gyülekezet"],
+    "type": "religious",
+    "founded": 1744,
+    "closed": null,
+    "location": [20.6630, 46.5662],
+    "description": "A város alapító evangélikusainak közössége; a lelkészek és egyháztanács a BM III/III alosztályának kiemelt célkeresztjében állt."
+  },
+  {
+    "id": "varosi_tanacs",
+    "name": "Orosháza Városi Tanács VB",
+    "aliases": ["Városháza", "Városi Tanács Végrehajtó Bizottsága"],
+    "type": "administrative",
+    "founded": 1950,
+    "closed": 1990,
+    "location": [20.6638, 46.5655],
+    "description": "Orosháza közigazgatási vezetése a tanácsrendszer idején."
+  }
+]

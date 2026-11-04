@@ -1,0 +1,82 @@
+[
+  {
+    "id": "szabadsag_ter",
+    "current_name": "Szabadság tér",
+    "history": [
+      {
+        "name": "Főtér",
+        "valid_from": 1880,
+        "valid_to": 1948
+      },
+      {
+        "name": "Lenin tér",
+        "valid_from": 1949,
+        "valid_to": 1990
+      },
+      {
+        "name": "Szabadság tér",
+        "valid_from": 1991,
+        "valid_to": null
+      }
+    ],
+    "center": [20.6634, 46.5658]
+  },
+  {
+    "id": "kossuth_lajos_utca",
+    "current_name": "Kossuth Lajos utca",
+    "history": [
+      {
+        "name": "Kossuth Lajos utca",
+        "valid_from": 1900,
+        "valid_to": null
+      }
+    ],
+    "center": [20.6650, 46.5670]
+  },
+  {
+    "id": "thokoly_utca",
+    "current_name": "Thököly utca",
+    "history": [
+      {
+        "name": "Beloiannisz utca",
+        "valid_from": 1952,
+        "valid_to": 1990
+      },
+      {
+        "name": "Thököly utca",
+        "valid_from": 1991,
+        "valid_to": null
+      }
+    ],
+    "center": [20.6680, 46.5620]
+  },
+  {
+    "id": "rakoczi_ut",
+    "current_name": "Rákóczi út",
+    "history": [
+      {
+        "name": "Vörös Hadsereg útja",
+        "valid_from": 1950,
+        "valid_to": 1990
+      },
+      {
+        "name": "Rákóczi út",
+        "valid_from": 1991,
+        "valid_to": null
+      }
+    ],
+    "center": [20.6600, 46.5640]
+  },
+  {
+    "id": "dozsa_gyorgy_utca",
+    "current_name": "Dózsa György utca",
+    "history": [
+      {
+        "name": "Dózsa György utca",
+        "valid_from": 1945,
+        "valid_to": null
+      }
+    ],
+    "center": [20.6620, 46.5690]
+  }
+]

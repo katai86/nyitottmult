@@ -30,6 +30,10 @@ define('OPENAI_API_KEY', getenv('OPENAI_API_KEY') ?: '');
 // Adatvédelmi motor (2026. évi LI. tv. – halál éve + 5 év)
 define('PRIVACY_DEATH_PLUS_YEARS', 5);
 
-// Település konfiguráció fájl útvonala
-define('SITE_CONFIG_PATH', dirname(__DIR__) . '/config/site.yaml');
-define('GAZETTEER_DIR', dirname(__DIR__) . '/config/gazetteer');
+// Település konfiguráció fájl útvonala (rugalmas felismerés külső vagy belső config mappa esetén)
+$detectedConfigDir = file_exists(dirname(__DIR__) . '/config/site.yaml')
+    ? dirname(__DIR__) . '/config'
+    : (file_exists(__DIR__ . '/config/site.yaml') ? __DIR__ . '/config' : dirname(__DIR__) . '/config');
+
+define('SITE_CONFIG_PATH', $detectedConfigDir . '/site.yaml');
+define('GAZETTEER_DIR', $detectedConfigDir . '/gazetteer');

@@ -1,0 +1,37 @@
+[
+  {
+    "id": "minta_homok",
+    "codename": "Homok",
+    "is_sample": true,
+    "category": "szemelyi_fedonev",
+    "description": "MINTA fiktív fedőnév hálózati személyhez (mezőgazdasági témakör)."
+  },
+  {
+    "id": "minta_katedra",
+    "codename": "Katedra",
+    "is_sample": true,
+    "category": "szemelyi_fedonev",
+    "description": "MINTA fiktív fedőnév oktatási/értelmiségi területen foglalkoztatott személyhez."
+  },
+  {
+    "id": "minta_uvegfuvo",
+    "codename": "Üvegfúvó",
+    "is_sample": true,
+    "category": "szemelyi_fedonev",
+    "description": "MINTA fiktív fedőnév az ipari gazdaságvédelmi vonalon."
+  },
+  {
+    "id": "minta_puszta",
+    "codename": "Puszta",
+    "is_sample": true,
+    "category": "objektum_fedonev",
+    "description": "MINTA fiktív objektumdosszié fedőnév (Szentetornya és Gyökeres tanyavilág ellenőrzése)."
+  },
+  {
+    "id": "minta_harang",
+    "codename": "Harang",
+    "is_sample": true,
+    "category": "ugy_fedonev",
+    "description": "MINTA fiktív vizsgálati ügy fedőnév (egyházi vonal)."
+  }
+]

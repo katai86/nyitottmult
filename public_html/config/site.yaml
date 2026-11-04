@@ -1,0 +1,60 @@
+site:
+  id: "oroshaza"
+  name: "Orosháza titkos múltja"
+  subtitle: "Az ügynökakták nyomában – Forrásalapú helytörténeti kutatóplatform"
+  description: "Ingyenes, nyilvános, térképes kutatóplatform az 1945–1990 közötti orosházi állambiztonsági iratok vizsgálatára, szigorú forráshivatkozással és adatvédelemmel."
+  initiator:
+    name: "Kátai Attila"
+    title: "AI specialista, projektgazda"
+    contact: "katai.attila@example.hu"
+  
+settlement:
+  name: "Orosháza"
+  county: "Békés vármegye"
+  country: "Magyarország"
+  center:
+    lat: 46.5658
+    lng: 20.6634
+  initial_zoom: 13
+  min_zoom: 11
+  max_zoom: 18
+  boundary_polygon:
+    type: "Polygon"
+    coordinates:
+      - [
+          [20.5900, 46.5300],
+          [20.7300, 46.5300],
+          [20.7400, 46.6100],
+          [20.5800, 46.6100],
+          [20.5900, 46.5300]
+        ]
+
+map:
+  tile_provider: "openfreemap"
+  tile_url: "https://tiles.openfreemap.org/styles/bright/{z}/{x}/{y}.png"
+  attribution: "© OpenStreetMap contributors, OpenFreeMap"
+  historic_layers:
+    - id: "oroshaza_1960_military"
+      name: "1960-as évek katonai felmérés"
+      year_start: 1955
+      year_end: 1968
+      type: "raster"
+      url: ""
+      opacity: 0.65
+
+privacy:
+  death_plus_years: 5
+  legal_reference: "2026. évi LI. törvény 14. §"
+  living_persons_default_hidden: true
+  private_residence_blur_to_district: true
+  dual_verification_required_for_public_claims: true
+
+ai:
+  provider: "gemini"
+  model: "gemini-1.5-flash"
+  temperature: 0.1
+  system_instruction: "Szigorúan forrásalapú helytörténeti asszisztens vagy. Kizárólag a megadott orosházi levéltári iratokból válaszolhatsz, minden állításnál kötelezően megjelölve a forrást és oldalszámot. Ha a forrásokban nincs adat, egyértelműen ezt kell mondanod: 'Erre a kérdésre a rendelkezésre álló orosházi dokumentumokban nincs forrás.' Találgatni tilos."
+
+languages:
+  default: "hu"
+  supported: ["hu", "en"]

@@ -1,0 +1,51 @@
+[
+  {
+    "id": "belvaros",
+    "name": "Belváros",
+    "historical_names": ["Központ", "Városközpont"],
+    "center": [20.6634, 46.5658],
+    "description": "Orosháza történelmi központja, a katolikus és evangélikus templomok, városháza és főtér környéke."
+  },
+  {
+    "id": "szentetornya",
+    "name": "Szentetornya",
+    "historical_names": ["Pusztaszentetornya"],
+    "center": [20.6200, 46.5780],
+    "description": "1946-ban Orosházához csatolt korábbi önálló község, északnyugati városrész."
+  },
+  {
+    "id": "rakoczitelep",
+    "name": "Rákóczitelep",
+    "historical_names": ["Rákóczi-telep"],
+    "center": [20.6950, 46.5520],
+    "description": "Délkeleti kertvárosi jellegű városrész, mezőgazdasági és vasutas lakossággal."
+  },
+  {
+    "id": "gyokeres",
+    "name": "Gyökeres",
+    "historical_names": ["Gyökeresi tanyavilág"],
+    "center": [20.6300, 46.5350],
+    "description": "Délnyugati külterület és egykori tanyacsoport."
+  },
+  {
+    "id": "gyoparosfurdo",
+    "name": "Gyopárosfürdő",
+    "historical_names": ["Gyopáros", "Gyopárosi Tó"],
+    "center": [20.6320, 46.5890],
+    "description": "Orosháza fürdő- és üdülőövezete a Gyopárosi-tó partján."
+  },
+  {
+    "id": "kiscako",
+    "name": "Kiscsákó",
+    "historical_names": ["Kiscsákói puszta", "Geist-kastély övezet"],
+    "center": [20.7350, 46.6120],
+    "description": "Orosháza északkeleti határrésze a Geist-birtokkal és kastéllyal."
+  },
+  {
+    "id": "uveggyar_telep",
+    "name": "Üveggyári lakótelep",
+    "historical_names": ["Üveggyári kolónia"],
+    "center": [20.6750, 46.5720],
+    "description": "Az 1963-ban alapított Síküveggyár melletti munkáslakótelep."
+  }
+]

@@ -14,6 +14,7 @@ ServerSignature Off
     RewriteRule ^\.env$ - [F,L]
     RewriteRule ^composer\.(json|lock)$ - [F,L]
     RewriteRule ^database/ - [F,L]
+    RewriteRule ^config/ - [F,L]
 
     # Ha létező fájl vagy mappa, kiszolgálás közvetlenül
     RewriteCond %{REQUEST_FILENAME} -f [OR]
