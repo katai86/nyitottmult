@@ -54,7 +54,7 @@ if (str_starts_with($uri, '/v1/documents')) {
     require __DIR__ . '/endpoints/entities.php';
 } elseif (str_starts_with($uri, '/v1/claims')) {
     require __DIR__ . '/endpoints/claims.php';
-} elseif (str_starts_with($uri, '/v1/map/places')) {
+} elseif (str_starts_with($uri, '/v1/map')) {
     require __DIR__ . '/endpoints/map.php';
 } elseif (str_starts_with($uri, '/v1/network/graph')) {
     require __DIR__ . '/endpoints/network.php';

@@ -1,6 +1,15 @@
 # Környezeti és érzékeny fájlok
 .env
+db_creds.txt
 config.local.php
+tools/prod_config.php
+tools/*.zip
+tools/debug_server.py
+tools/deploy_to_directadmin.py
+tools/execute_db_setup.py
+tools/init_db.php
+tools/test_server_php.py
+tools/update_server.py
 
 # Feltöltött valós dokumentumok és iratképek (a repóba nem kerülhet valódi irat!)
 public_html/uploads/docs/*

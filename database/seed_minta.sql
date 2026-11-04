@@ -8,19 +8,19 @@ SET FOREIGN_KEY_CHECKS = 0;
 
 -- 1. Teszt Felhasználók (jelszó: 'MintaJelszo2026!' Argon2/Bcrypt hash: $2y$10$abcdefg...)
 -- sha256 mock hash admin felülethez
-INSERT INTO `users` (`id`, `username`, `email`, `password_hash`, `role`, `full_name`, `created_at`) VALUES
+INSERT IGNORE INTO `users` (`id`, `username`, `email`, `password_hash`, `role`, `full_name`, `created_at`) VALUES
 ('u0000001-0000-0000-0000-000000000001', 'admin', 'admin@oroshaza-minta.hu', '$2y$10$wE8s4bYp9YwZ.GfQn3Z3g.v9w9v9w9v9w9v9w9v9w9v9w9v9w9v9w', 'admin', 'Kátai Attila (Rendszergazda)', NOW()),
 ('u0000001-0000-0000-0000-000000000002', 'lektor_maria', 'maria.lektor@oroshaza-minta.hu', '$2y$10$wE8s4bYp9YwZ.GfQn3Z3g.v9w9v9w9v9w9v9w9v9w9v9w9v9w9v9w', 'reviewer', 'MINTA Dr. Nagy Mária történész', NOW()),
 ('u0000001-0000-0000-0000-000000000003', 'kutato_peter', 'peter.kutato@oroshaza-minta.hu', '$2y$10$wE8s4bYp9YwZ.GfQn3Z3g.v9w9v9w9v9w9v9w9v9w9v9w9v9w9v9w', 'researcher', 'MINTA Kovács Péter levéltáros', NOW());
 
 -- 2. Levéltári Forrásdokumentumok (MINTA)
-INSERT INTO `source_documents` (`id`, `archive_code`, `document_type`, `title`, `date_created`, `original_url`, `downloaded_at`, `sha256_hash`, `license_note`) VALUES
+INSERT IGNORE INTO `source_documents` (`id`, `archive_code`, `document_type`, `title`, `date_created`, `original_url`, `downloaded_at`, `sha256_hash`, `license_note`) VALUES
 ('d0000001-0000-0000-0000-000000000001', 'ÁBTL - 3.1.2. - MINTA-6-OS-KARTON-1959', '6_os_karton', 'MINTA 6-os nyilvántartó karton – Orosházi Politikai Nyomozó Kirendeltség (1959)', '1959-04-12', 'https://nyitottaktak.hu/minta/karton_1959.pdf', NOW(), 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855', 'ÁBTL nyilvános minta másolat 2026. évi LI. tv.'),
 ('d0000001-0000-0000-0000-000000000002', 'ÁBTL - 3.1.2. - MINTA-B-NAPLO-1960', 'b_naplo', 'MINTA Beszervezési Napló – Orosházi Járás (1960)', '1960-01-15', 'https://nyitottaktak.hu/minta/bnaplo_1960.pdf', NOW(), 'a1b2c3d4e5f60718293a4b5c6d7e8f90123456789abcdef0123456789abcdef0', 'ÁBTL nyilvános minta másolat 2026. évi LI. tv.'),
 ('d0000001-0000-0000-0000-000000000003', 'ÁBTL - 3.1.2. - MINTA-M-9999-DOSSZIE', 'm_dosszie', 'MINTA Munka-dosszié – "Homok" fedőnevű informátor jelentései az orosházi üzemekről (1960–1961)', '1960-09-20', 'https://nyitottaktak.hu/minta/m9999_1960.pdf', NOW(), 'b2c3d4e5f60718293a4b5c6d7e8f90123456789abcdef0123456789abcdef01', 'ÁBTL nyilvános minta másolat 2026. évi LI. tv.');
 
 -- 3. Oldalak és OCR réteg (MINTA)
-INSERT INTO `pages` (`id`, `document_id`, `page_number`, `image_path`, `thumbnail_path`, `ocr_text_raw`, `ocr_text_corrected`, `ocr_confidence`, `ocr_boxes_json`) VALUES
+INSERT IGNORE INTO `pages` (`id`, `document_id`, `page_number`, `image_path`, `thumbnail_path`, `ocr_text_raw`, `ocr_text_corrected`, `ocr_confidence`, `ocr_boxes_json`) VALUES
 ('p0000001-0000-0000-0000-000000000001', 'd0000001-0000-0000-0000-000000000001', 1, 'assets/sample_docs/karton_sample_p1.webp', 'assets/sample_docs/karton_sample_p1_thumb.webp',
 'ÁLLAMBIZTONSÁGI NYILVÁNTARTÓ KARTON (6-os)\nNév: MINTA Kovács János\nSzületési hely, idő: Orosháza, 1925. március 10.\nAnyja neve: MINTA Kis Julianna\nFoglalkozása: géplakatos, Orosházi Mezőgép Vállalat\nFedőneve: "Homok"\nBeszervezés ideje: 1959. április 12.\nBeszervező tiszt: MINTA Tóth Béla r. fhdgy. (Orosházi PNK)\nBeszervezés alapja: hazafias alapon\nFoglalkoztatási vonal: belső reakció / mezőgazdasági szektor, Orosháza és Gyökeres térsége.',
 'ÁLLAMBIZTONSÁGI NYILVÁNTARTÓ KARTON (6-os)\nNév: MINTA Kovács János\nSzületési hely, idő: Orosháza, 1925. március 10.\nAnyja neve: MINTA Kis Julianna\nFoglalkozása: géplakatos, Orosházi Mezőgép Vállalat\nFedőneve: "Homok"\nBeszervezés ideje: 1959. április 12.\nBeszervező tiszt: MINTA Tóth Béla r. fhdgy. (Orosházi PNK)\nBeszervezés alapja: hazafias alapon\nFoglalkoztatási vonal: belső reakció / mezőgazdasági szektor, Orosháza és Gyökeres térsége.',
@@ -28,14 +28,14 @@ INSERT INTO `pages` (`id`, `document_id`, `page_number`, `image_path`, `thumbnai
 '[{"text": "MINTA Kovács János", "x": 120, "y": 85, "w": 340, "h": 28}, {"text": "Homok", "x": 120, "y": 140, "w": 110, "h": 26}, {"text": "MINTA Tóth Béla r. fhdgy.", "x": 280, "y": 200, "w": 320, "h": 26}]'
 ),
 ('p0000001-0000-0000-0000-000000000002', 'd0000001-0000-0000-0000-000000000003', 14, 'assets/sample_docs/m_dosszie_p14.webp', 'assets/sample_docs/m_dosszie_p14_thumb.webp',
-'JELENTÉS\nOrosháza, 1960. szeptember 20.\nVette: MINTA Tóth Béla r. százados\nAdta: "Homok" fn. informátor\nTalálkozás helye: Orosháza, Beloiannisz utcai ' + 'K' + ' lakás\n\nJelentem, hogy 1960. szeptember 18-án este találkoztam MINTA Dr. Szabó István gimnáziumi tanárral a Szabadság téri presszóban. Szabó tanár úr az 1956-os eseményekről és a helyi egyházi ifjúsági körökről beszélt, kifejezve aggodalmát a kollektivizálás orosházi kényszermódszerei miatt. Felesége, MINTA Kis Éva nem vett részt a beszélgetésben.',
-'JELENTÉS\nOrosháza, 1960. szeptember 20.\nVette: MINTA Tóth Béla r. százados\nAdta: "Homok" fn. informátor\nTalálkozás helye: Orosháza, Beloiannisz utcai ' + 'K' + ' lakás\n\nJelentem, hogy 1960. szeptember 18-án este találkoztam MINTA Dr. Szabó István gimnáziumi tanárral a Szabadság téri presszóban. Szabó tanár úr az 1956-os eseményekről és a helyi egyházi ifjúsági körökről beszélt, kifejezve aggodalmát a kollektivizálás orosházi kényszermódszerei miatt. Felesége, MINTA Kis Éva nem vett részt a beszélgetésben.',
+'JELENTÉS\nOrosháza, 1960. szeptember 20.\nVette: MINTA Tóth Béla r. százados\nAdta: "Homok" fn. informátor\nTalálkozás helye: Orosháza, Beloiannisz utcai K-lakás\n\nJelentem, hogy 1960. szeptember 18-án este találkoztam MINTA Dr. Szabó István gimnáziumi tanárral a Szabadság téri presszóban. Szabó tanár úr az 1956-os eseményekről és a helyi egyházi ifjúsági körökről beszélt, kifejezve aggodalmát a kollektivizálás orosházi kényszermódszerei miatt. Felesége, MINTA Kis Éva nem vett részt a beszélgetésben.',
+'JELENTÉS\nOrosháza, 1960. szeptember 20.\nVette: MINTA Tóth Béla r. százados\nAdta: "Homok" fn. informátor\nTalálkozás helye: Orosháza, Beloiannisz utcai K-lakás\n\nJelentem, hogy 1960. szeptember 18-án este találkoztam MINTA Dr. Szabó István gimnáziumi tanárral a Szabadság téri presszóban. Szabó tanár úr az 1956-os eseményekről és a helyi egyházi ifjúsági körökről beszélt, kifejezve aggodalmát a kollektivizálás orosházi kényszermódszerei miatt. Felesége, MINTA Kis Éva nem vett részt a beszélgetésben.',
 0.96,
 '[{"text": "MINTA Dr. Szabó István", "x": 150, "y": 320, "w": 310, "h": 24}, {"text": "Homok fn. informátor", "x": 140, "y": 110, "w": 260, "h": 24}]'
 );
 
 -- 4. Entitások (MINTA)
-INSERT INTO `entities` (`id`, `type`, `canonical_name`, `aliases`, `time_range_start`, `time_range_end`, `metadata`, `is_sample`) VALUES
+INSERT IGNORE INTO `entities` (`id`, `type`, `canonical_name`, `aliases`, `time_range_start`, `time_range_end`, `metadata`, `is_sample`) VALUES
 ('e0000001-0000-0000-0000-000000000001', 'person', 'MINTA Kovács János', '["Kovács J.", "Homok", "Kovács János géplakatos"]', '1925-03-10', '1985-11-04', '{"birth_place": "Orosháza", "occupation": "géplakatos", "mother_name": "MINTA Kis Julianna"}', 1),
 ('e0000001-0000-0000-0000-000000000002', 'codename', 'Homok (MINTA fedőnév)', '["Homok"]', '1959-04-12', '1968-01-01', '{"category": "hálózati személy fedőneve"}', 1),
 ('e0000001-0000-0000-0000-000000000003', 'person', 'MINTA Dr. Szabó István', '["Szabó István", "dr. Szabó István gimnáziumi tanár"]', '1918-06-22', '1995-02-14', '{"birth_place": "Szentetornya", "occupation": "történelemtanár", "workplace": "Táncsics Mihály Gimnázium"}', 1),
@@ -46,7 +46,7 @@ INSERT INTO `entities` (`id`, `type`, `canonical_name`, `aliases`, `time_range_s
 ('e0000001-0000-0000-0000-000000000008', 'place', 'Szabadság téri presszó (egykori)', '["Lenin téri presszó", "Központi Cukrászda"]', '1950-01-01', '1989-12-31', '{"type": "találkozási helyszín"}', 1);
 
 -- 5. Adatvédelmi Nyilvántartás (2026. évi LI. tv., Halál éve + 5 év szabály)
-INSERT INTO `privacy_records` (`id`, `entity_id`, `status`, `death_year`, `legal_release_year`, `is_publicly_visible`, `redaction_reason`, `verified_by`, `verified_at`) VALUES
+INSERT IGNORE INTO `privacy_records` (`id`, `entity_id`, `status`, `death_year`, `legal_release_year`, `is_publicly_visible`, `redaction_reason`, `verified_by`, `verified_at`) VALUES
 -- 1985-ben halt meg -> 1985 + 5 = 1990 <= 2026 -> NYILVÁNOS
 ('pr000001-0000-0000-0000-000000000001', 'e0000001-0000-0000-0000-000000000001', 'deceased', 1985, 1990, 1, NULL, 'u0000001-0000-0000-0000-000000000001', NOW()),
 -- Fedőnév: mindig nyilvános
@@ -63,7 +63,7 @@ INSERT INTO `privacy_records` (`id`, `entity_id`, `status`, `death_year`, `legal
 ('pr000001-0000-0000-0000-000000000008', 'e0000001-0000-0000-0000-000000000008', 'deceased', 1989, 1994, 1, NULL, 'u0000001-0000-0000-0000-000000000001', NOW());
 
 -- 6. Forrásállítások (Claims)
-INSERT INTO `claims` (`id`, `document_id`, `page_id`, `quote`, `bounding_box`, `statement`, `subject_entity_id`, `status`, `ai_generated`, `confidence_score`, `created_by`) VALUES
+INSERT IGNORE INTO `claims` (`id`, `document_id`, `page_id`, `quote`, `bounding_box`, `statement`, `subject_entity_id`, `status`, `ai_generated`, `confidence_score`, `created_by`) VALUES
 ('c0000001-0000-0000-0000-000000000001', 'd0000001-0000-0000-0000-000000000001', 'p0000001-0000-0000-0000-000000000001',
 'Név: MINTA Kovács János (...) Fedőneve: "Homok" (...) Beszervezés ideje: 1959. április 12. Beszervező tiszt: MINTA Tóth Béla r. fhdgy.',
 '{"x": 120, "y": 85, "w": 480, "h": 140}',

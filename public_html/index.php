@@ -35,6 +35,7 @@ Router::get('/bizonyitekterkep', 'evidence_map');
 Router::get('/kapcsolati-halo', 'network');
 Router::get('/idovonal', 'timeline');
 Router::get('/ai-kutato', 'ai_historian');
+Router::get('/ai-tortenesz', 'ai_historian');
 Router::get('/tortenetek', 'stories');
 Router::get('/kozosseg', 'community');
 Router::post('/kozosseg', 'community');
@@ -42,11 +43,14 @@ Router::get('/helyesbites', 'correction');
 Router::post('/helyesbites', 'correction');
 Router::get('/atlathatosag', 'transparency');
 Router::get('/api-docs', 'api_docs');
+Router::get('/api-dokumentacio', 'api_docs');
 
 // Zárt kutatói útvonalak
 Router::get('/kutato', 'researcher/dashboard');
 Router::get('/kutato/login', 'researcher/login');
 Router::post('/kutato/login', 'researcher/login');
+Router::get('/kutato/belepes', 'researcher/login');
+Router::post('/kutato/belepes', 'researcher/login');
 Router::get('/kutato/detektiv', 'researcher/detective');
 Router::get('/kutato/ellenorzes', 'researcher/verification');
 Router::post('/kutato/ellenorzes', 'researcher/verification');
