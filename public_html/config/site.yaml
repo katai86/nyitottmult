@@ -13,8 +13,8 @@ settlement:
   county: "Békés vármegye"
   country: "Magyarország"
   center:
-    lat: 46.5658
-    lng: 20.6634
+    lat: 46.5650
+    lng: 20.6680
   initial_zoom: 13
   min_zoom: 11
   max_zoom: 18

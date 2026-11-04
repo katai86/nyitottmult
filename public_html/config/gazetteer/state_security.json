@@ -2,33 +2,33 @@
   {
     "id": "oroshazi_pnk_1959_60",
     "name": "Orosházi Politikai Nyomozó Kirendeltség",
-    "short_name": "Orosházi PNK",
-    "period": "1959–1960",
-    "description": "Az 1956-os forradalmat követő megtorlások és kollektivizálás idején Orosházán működő önálló állambiztonsági kirendeltség.",
-    "location": [20.6625, 46.5645]
+    "short_name": "Orosházi PNK / Rendőrség",
+    "period": "1956–1990",
+    "description": "Az Orosházi Járási Rendőrkapitányság és a helyi politikai nyomozó alosztály székhelye a Szabadság tér déli szárnyán (Szabadság tér 2. / Lenin tér 2.). Ebben az épületben működtek a tartótisztek, itt zajlottak az orosházi hálózati személyek eligazításai, a jelentések átvétele, a beszervezési zsarolások és az 1956-os forradalmat követő megtorló vizsgálati kihallgatások.",
+    "location": [20.67115, 46.55739]
+  },
+  {
+    "id": "szabadsag_teri_presszo",
+    "name": "Szabadság téri Presszó (Konspirált találkozási pont)",
+    "short_name": "Szabadság téri Presszó (K-pont)",
+    "period": "1958–1989",
+    "description": "A korabeli orosházi belváros legnépszerűbb vendéglátóhelye a főtéren (Szabadság tér 1.). Az állambiztonsági tartótisztek és informátoraik rendszeresen használták 'fedett', kötetlen találkozók lebonyolítására, a megfigyelt helyi értelmiségiek lehallgatására és operatív környezettanulmányok készítésére.",
+    "location": [20.6708, 46.5580]
+  },
+  {
+    "id": "bm_iii_ii_gazdasagvedelem",
+    "name": "BM III/II Ipari és Gazdaságvédelmi Rezidentúra",
+    "short_name": "III/II Ipari Rezidentúra (Csorvási út)",
+    "period": "1965–1989",
+    "description": "Az orosházi ipari negyed (Síküveggyár és Mezőgép Vállalat) védelmére létesített helyi operatív rezidentúra a Csorvási úton. Feladata a technológiai titkok védelme, a külföldi műszaki szakértők szoros felügyelete, valamint az ipari szabotázsakciók elhárítása volt beépített hálózati személyek útján.",
+    "location": [20.6780, 46.5720]
   },
   {
     "id": "bekes_megyei_rfk_pno",
     "name": "Békés Megyei Rendőr-főkapitányság Politikai Nyomozó Osztálya",
-    "short_name": "Békés Megyei PNO",
-    "period": "1956–1962",
-    "description": "A Békés megyei állambiztonsági felderítés megyei irányító szerve a BM III. Főcsoportfőnökség megalakulása előtt.",
+    "short_name": "Békés Megyei PNO / III. Főcsoportfőnökség",
+    "period": "1956–1990",
+    "description": "A Békés megyei állambiztonsági vezetés központja (Békéscsaba, Bartók Béla út 1–3.), amely az orosházi kirendeltséget közvetlenül irányította. Ide futottak be az orosházi ügynökök 6-os kartonjai, a B- (beszervezési), M- (munka) és V- (vizsgálati) dossziék felterjesztései.",
     "location": [21.0920, 46.6800]
-  },
-  {
-    "id": "bm_iii_iii_bekes",
-    "name": "BM III/III Békés Megyei Alosztály",
-    "short_name": "III/III Békés (Belső reakció elhárítás)",
-    "period": "1962–1990",
-    "description": "Egyházak, ifjúság, értelmiség és 'belső ellenség' megfigyelésére szakosodott alosztály, helyi rezidentúrával Orosházán.",
-    "location": [20.6630, 46.5650]
-  },
-  {
-    "id": "bm_iii_ii_gazdasagvedelem",
-    "name": "BM III/II Ipari és Gazdaságvédelmi Csoport",
-    "short_name": "III/II Gazdaságvédelem (Üveggyár)",
-    "period": "1965–1989",
-    "description": "Kiemelt ipari vállalatok (Síküveggyár, Mezőgép) ellenőrzése, ipari szabotázs és külföldi kapcsolatok felügyelete.",
-    "location": [20.6780, 46.5740]
   }
 ]

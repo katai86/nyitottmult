@@ -4,7 +4,7 @@
     "current_name": "Szabadság tér",
     "history": [
       {
-        "name": "Főtér",
+        "name": "Főtér / Piactér",
         "valid_from": 1880,
         "valid_to": 1948
       },
@@ -19,7 +19,7 @@
         "valid_to": null
       }
     ],
-    "center": [20.6634, 46.5658]
+    "center": [20.6710, 46.5580]
   },
   {
     "id": "kossuth_lajos_utca",
@@ -31,7 +31,7 @@
         "valid_to": null
       }
     ],
-    "center": [20.6650, 46.5670]
+    "center": [20.6705, 46.5620]
   },
   {
     "id": "thokoly_utca",
@@ -48,7 +48,7 @@
         "valid_to": null
       }
     ],
-    "center": [20.6680, 46.5620]
+    "center": [20.6730, 46.5630]
   },
   {
     "id": "rakoczi_ut",
@@ -65,7 +65,7 @@
         "valid_to": null
       }
     ],
-    "center": [20.6600, 46.5640]
+    "center": [20.6680, 46.5560]
   },
   {
     "id": "dozsa_gyorgy_utca",
@@ -77,6 +77,47 @@
         "valid_to": null
       }
     ],
-    "center": [20.6620, 46.5690]
+    "center": [20.6610, 46.5640]
+  },
+  {
+    "id": "tancsics_utca",
+    "current_name": "Táncsics Mihály utca",
+    "history": [
+      {
+        "name": "Táncsics Mihály utca",
+        "valid_from": 1948,
+        "valid_to": null
+      }
+    ],
+    "center": [20.6725, 46.5590]
+  },
+  {
+    "id": "szentesi_ut",
+    "current_name": "Szentesi út",
+    "history": [
+      {
+        "name": "Szentesi országút",
+        "valid_from": 1900,
+        "valid_to": 1950
+      },
+      {
+        "name": "Szentesi út",
+        "valid_from": 1951,
+        "valid_to": null
+      }
+    ],
+    "center": [20.6400, 46.5680]
+  },
+  {
+    "id": "csorvasi_ut",
+    "current_name": "Csorvási út",
+    "history": [
+      {
+        "name": "Csorvási út (Gyártelep)",
+        "valid_from": 1950,
+        "valid_to": null
+      }
+    ],
+    "center": [20.6770, 46.5710]
   }
 ]

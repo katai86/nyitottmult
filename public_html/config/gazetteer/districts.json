@@ -2,50 +2,64 @@
   {
     "id": "belvaros",
     "name": "Belváros",
-    "historical_names": ["Központ", "Városközpont"],
-    "center": [20.6634, 46.5658],
-    "description": "Orosháza történelmi központja, a katolikus és evangélikus templomok, városháza és főtér környéke."
-  },
-  {
-    "id": "szentetornya",
-    "name": "Szentetornya",
-    "historical_names": ["Pusztaszentetornya"],
-    "center": [20.6200, 46.5780],
-    "description": "1946-ban Orosházához csatolt korábbi önálló község, északnyugati városrész."
+    "historical_names": ["Központ", "Városközpont", "Főtér", "Belső város"],
+    "center": [20.6705, 46.5585],
+    "description": "Orosháza történelmi és közigazgatási központja. Itt található a Szabadság tér (1990-ig Lenin tér), a Polgármesteri Hivatal (egykori Tanácsháza), az Evangélikus és Katolikus Nagytemplom, a Táncsics Mihály Gimnázium és az egykori Orosházi Járási Rendőrkapitányság épülete."
   },
   {
     "id": "rakoczitelep",
     "name": "Rákóczitelep",
-    "historical_names": ["Rákóczi-telep"],
-    "center": [20.6950, 46.5520],
-    "description": "Délkeleti kertvárosi jellegű városrész, mezőgazdasági és vasutas lakossággal."
+    "historical_names": ["Rákóczi-telep", "Rákóczi munkástelep"],
+    "center": [20.6133, 46.5622],
+    "description": "Orosháza nyugati, kertes családi házas külső városrésze a Szentesi út és a 147-es vasútvonal mentén, Gyopárosfürdő és Szentetornya közvetlen szomszédságában (Hosszú utca – Kinizsi Pál utca tengely). Az 1900-as évek elején felparcellázott munkás- és kisbirtokos településrész; az 1950–1960-as években jelentős vasutas, mezőgazdasági és ipari lakossággal."
   },
   {
-    "id": "gyokeres",
-    "name": "Gyökeres",
-    "historical_names": ["Gyökeresi tanyavilág"],
-    "center": [20.6300, 46.5350],
-    "description": "Délnyugati külterület és egykori tanyacsoport."
+    "id": "szentetornya",
+    "name": "Szentetornya",
+    "historical_names": ["Pusztaszentetornya", "Szentetornyai község"],
+    "center": [20.6116, 46.5811],
+    "description": "1946-ban Orosházához csatolt, gazdag múltú korábbi önálló nagyközség a város északnyugati határában. A kollektivizálás és az 1956 utáni megtorlás időszakában a szentetornyai gazdák, egyházi közösségek és független parasztság a helyi állambiztonsági informátori hálózat állandó megfigyelése alatt állt."
   },
   {
     "id": "gyoparosfurdo",
     "name": "Gyopárosfürdő",
-    "historical_names": ["Gyopáros", "Gyopárosi Tó"],
-    "center": [20.6320, 46.5890],
-    "description": "Orosháza fürdő- és üdülőövezete a Gyopárosi-tó partján."
+    "historical_names": ["Gyopáros", "Gyopárosi Gyógyfürdő", "Gyopárosi Tó"],
+    "center": [20.6331, 46.5661],
+    "description": "Orosháza országos hírű fürdő- és üdülőövezete a Gyopárosi-tó partján ('az Alföld gyöngyszeme'). A szocializmus évtizedeiben szakszervezeti üdülők, vállalati pihenők és külföldi vendégek központja; a határőrség és a politikai nyomozók idegenforgalmi és konspiratív ellenőrzési pontja."
+  },
+  {
+    "id": "gyokeres",
+    "name": "Gyökeres",
+    "historical_names": ["Gyökeresi tanyavilág", "Alsó-Gyökeres", "Felső-Gyökeres", "Gyökeresitanyák"],
+    "center": [20.6350, 46.6050],
+    "description": "Kiterjedt északnyugati tanyavilág Orosháza és Gádoros határán, a Mágocs-ér vízgyűjtő területén. Az 1950-es évek erőszakos téeszesítése idején a kuláklistára tett gazdák és az egyéni gazdálkodók ellenállásának egyik legszigorúbban megfigyelt vidéki körzete."
   },
   {
     "id": "kiscako",
     "name": "Kiscsákó",
-    "historical_names": ["Kiscsákói puszta", "Geist-kastély övezet"],
-    "center": [20.7350, 46.6120],
-    "description": "Orosháza északkeleti határrésze a Geist-birtokkal és kastéllyal."
+    "historical_names": ["Kiscsákói puszta", "Geist-birtok", "Gáspártelek", "Geist-Reckmann kastély övezet"],
+    "center": [20.7506, 46.7010],
+    "description": "Orosháza történelmi északkeleti határrésze és pusztája a Geist család romantikus kastélyával és Ybl Miklós által tervezett kápolnájával. A háború után államosított területen állami gazdaság működött; a tanyavilág és a mezőgazdasági munkások politikai megbízhatóságát a helyi hálózat folyamatosan monitorozta."
   },
   {
     "id": "uveggyar_telep",
     "name": "Üveggyári lakótelep",
-    "historical_names": ["Üveggyári kolónia"],
-    "center": [20.6750, 46.5720],
-    "description": "Az 1963-ban alapított Síküveggyár melletti munkáslakótelep."
+    "historical_names": ["Üveggyári kolónia", "Üveggyár lakótelep"],
+    "center": [20.6790, 46.5720],
+    "description": "Az 1963-ban felépült Síküveggyár mellé telepített szocialista mintalakótelep és munkáskolónia a Csorvási út mentén. Az orosházi ipari munkásság több ezer fős bázisa, a BM III/II gazdaságvédelmi alosztály belső informátorainak állandó működési terepe."
+  },
+  {
+    "id": "bonum",
+    "name": "Bonum",
+    "historical_names": ["Bonum-tanya", "Bonum téglagyár", "Bonumi dűlő"],
+    "center": [20.6450, 46.5550],
+    "description": "Orosháza nyugati külterületi ipari-tanyás övezete a vasútvonal mentén; az egykori téglagyár és mezőgazdasági telephelyek körzete a város és Székkutas között."
+  },
+  {
+    "id": "ujosztas",
+    "name": "Újosztás",
+    "historical_names": ["Újosztás", "Déli kertváros"],
+    "center": [20.6550, 46.5450],
+    "description": "Orosháza déli-délnyugati kertvárosi lakóövezete a Kardoskúti út és Arad felé vezető tengely mentén."
   }
 ]

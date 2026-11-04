@@ -6,6 +6,7 @@ $siteConfig = \NyitottMult\Config::getSiteConfig();
 $districts = \NyitottMult\Config::getDistricts();
 $streets = \NyitottMult\Config::getStreetHistory();
 $orgs = \NyitottMult\Config::getOrganizations();
+$stateSecurity = \NyitottMult\Config::getStateSecurityUnits();
 ?>
 
 <div style="margin-bottom: 1.5rem;">
@@ -70,10 +71,11 @@ $orgs = \NyitottMult\Config::getOrganizations();
     window.siteMapConfig = {
         center: [<?= (float)$siteConfig['settlement']['center']['lng'] ?>, <?= (float)$siteConfig['settlement']['center']['lat'] ?>],
         zoom: <?= (int)$siteConfig['settlement']['initial_zoom'] ?>,
-        tileUrl: '<?= htmlspecialchars($siteConfig['map']['tile_url'] ?? "https://tiles.openfreemap.org/styles/bright/{z}/{x}/{y}.png") ?>',
+        tileUrl: '<?= htmlspecialchars($siteConfig['map']['tile_url'] ?? "https://tile.openstreetmap.org/{z}/{x}/{y}.png") ?>',
         districts: <?= json_encode($districts, JSON_UNESCAPED_UNICODE) ?>,
         streetHistory: <?= json_encode($streets, JSON_UNESCAPED_UNICODE) ?>,
-        organizations: <?= json_encode($orgs, JSON_UNESCAPED_UNICODE) ?>
+        organizations: <?= json_encode($orgs, JSON_UNESCAPED_UNICODE) ?>,
+        stateSecurity: <?= json_encode($stateSecurity, JSON_UNESCAPED_UNICODE) ?>
     };
 </script>
 <script src="/assets/js/map.js"></script>
