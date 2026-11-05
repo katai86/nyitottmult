@@ -8,21 +8,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const chatMessages = document.getElementById('chatMessages');
     const submitBtn = document.getElementById('chatSubmitBtn');
 
-    // Minta kérdések kattintása
-    document.querySelectorAll('.sample-q-btn').forEach(btn => {
-        btn.addEventListener('click', function () {
-            if (chatInput) {
-                chatInput.value = this.textContent.trim();
-                chatForm.dispatchEvent(new Event('submit'));
-            }
-        });
-    });
-
     if (!chatForm || !chatInput || !chatMessages) return;
 
-    chatForm.addEventListener('submit', function (e) {
-        e.preventDefault();
-        const text = chatInput.value.trim();
+    function sendQuestion(text) {
+        text = (text || '').trim();
         if (!text) return;
 
         // Felhasználói buborék hozzáadása
@@ -40,7 +29,14 @@ document.addEventListener('DOMContentLoaded', function () {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ question: text })
         })
-        .then(res => res.json())
+        .then(res => {
+            if (!res.ok) {
+                return res.json().then(j => { throw new Error(j.error || ('HTTP ' + res.status)); }).catch(e => {
+                    throw new Error('Szerverhiba: ' + res.status);
+                });
+            }
+            return res.json();
+        })
         .then(data => {
             removeLoading(loadingId);
             chatInput.disabled = false;
@@ -54,8 +50,29 @@ document.addEventListener('DOMContentLoaded', function () {
             removeLoading(loadingId);
             chatInput.disabled = false;
             if (submitBtn) submitBtn.disabled = false;
-            appendMessage('bot', 'Hálózati hiba történt a kapcsolatfelvétel során.');
+            appendMessage('bot', 'Hálózati vagy szerverhiba történt a válasz lekérésekor (' + err.message + '). Kérjük próbálja újra!');
         });
+    }
+
+    // Minta kérdések kattintása
+    document.querySelectorAll('.sample-q-btn').forEach(btn => {
+        btn.setAttribute('type', 'button');
+        btn.addEventListener('click', function (e) {
+            e.preventDefault();
+            const text = this.getAttribute('data-question') || this.textContent.trim();
+            if (chatInput) {
+                chatInput.value = text;
+            }
+            sendQuestion(text);
+        });
+    });
+
+    chatForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const text = chatInput.value.trim();
+        if (text) {
+            sendQuestion(text);
+        }
     });
 
     function appendMessage(sender, text, sources = []) {

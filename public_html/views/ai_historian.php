@@ -38,13 +38,13 @@ include __DIR__ . '/layout/header.php';
     <!-- Javasolt kutatási kérdések gombjai -->
     <div style="padding: 0.5rem 1rem; background: #f1f5f9; border-top: 1px solid var(--border); display: flex; gap: 0.5rem; overflow-x: auto; font-size: 0.8rem;">
         <span style="color: #64748b; font-weight: 600; align-self: center; white-space: nowrap;">Javasolt kérdések:</span>
-        <button class="sample-q-btn btn btn-secondary" style="padding: 0.2rem 0.5rem; font-size: 0.75rem; white-space: nowrap;">
+        <button type="button" class="sample-q-btn btn btn-secondary" style="padding: 0.25rem 0.6rem; font-size: 0.75rem; white-space: nowrap; cursor: pointer;" data-question="Ki volt Adász Zoltán és mi volt a fedőneve?">
             Ki volt Adász Zoltán és mi volt a fedőneve?
         </button>
-        <button class="sample-q-btn btn btn-secondary" style="padding: 0.2rem 0.5rem; font-size: 0.75rem; white-space: nowrap;">
+        <button type="button" class="sample-q-btn btn btn-secondary" style="padding: 0.25rem 0.6rem; font-size: 0.75rem; white-space: nowrap; cursor: pointer;" data-question="Mit tudunk Bánki Horváth Ferencről a levéltári iratok alapján?">
             Mit tudunk Bánki Horváth Ferencről a levéltári iratok alapján?
         </button>
-        <button class="sample-q-btn btn btn-secondary" style="padding: 0.2rem 0.5rem; font-size: 0.75rem; white-space: nowrap;">
+        <button type="button" class="sample-q-btn btn btn-secondary" style="padding: 0.25rem 0.6rem; font-size: 0.75rem; white-space: nowrap; cursor: pointer;" data-question="Kik szerepelnek az orosházi állambiztonsági nyilvántartásokban?">
             Kik szerepelnek az orosházi állambiztonsági nyilvántartásokban?
         </button>
     </div>

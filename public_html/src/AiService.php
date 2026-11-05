@@ -12,8 +12,27 @@ declare(strict_types=1);
 
 namespace NyitottMult;
 
+require_once __DIR__ . '/i18n.php';
+
 class AiService
 {
+    /**
+     * Nyelvi lefordító biztonsági wrapper
+     */
+    private static function t(string $key, array $params = []): string
+    {
+        if (function_exists('__')) {
+            $val = \__($key, $params);
+            if (!empty($val) && $val !== $key) {
+                return $val;
+            }
+        }
+        if ($key === 'ai.no_source_answer') {
+            return 'Erre a kérdésre a rendelkezésre álló orosházi levéltári dokumentumokban nincs közvetlen forrás.';
+        }
+        return $key;
+    }
+
     /**
      * Kérdés megválaszolása a levéltári források alapján
      */
@@ -22,7 +41,7 @@ class AiService
         $question = trim($question);
         if (empty($question)) {
             return [
-                'answer' => __('ai.no_source_answer'),
+                'answer' => self::t('ai.no_source_answer'),
                 'sources' => [],
                 'status' => 'no_query'
             ];
@@ -32,7 +51,7 @@ class AiService
         $cleanQuestion = preg_replace('/[^\p{L}\p{N}\s]/u', ' ', $question);
         $rawWords = array_filter(explode(' ', mb_strtolower($cleanQuestion)), fn($w) => mb_strlen($w) >= 3);
 
-        $stopwords = ['ki', 'volt', 'voltak', 'milyen', 'hol', 'mikor', 'hogy', 'miert', 'miért', 'tudsz', 'valamit', 'mondani', 'mesélj', 'szerint', 'lehet', 'orosháza', 'orosházi', 'akták', 'akta', 'irat', 'iratok', 'ember', 'emberek', 'személy', 'személyek', 'valaki'];
+        $stopwords = ['ki', 'volt', 'voltak', 'milyen', 'hol', 'mikor', 'hogy', 'miert', 'miért', 'tudsz', 'valamit', 'mondani', 'mesélj', 'szerint', 'lehet', 'akták', 'akta', 'irat', 'iratok', 'ember', 'emberek', 'személy', 'személyek', 'valaki'];
         $keywords = array_values(array_filter($rawWords, fn($w) => !in_array($w, $stopwords, true)));
 
         if (empty($keywords)) {
@@ -41,7 +60,7 @@ class AiService
 
         if (empty($keywords)) {
             return [
-                'answer' => __('ai.no_source_answer'),
+                'answer' => self::t('ai.no_source_answer'),
                 'sources' => [],
                 'status' => 'no_keywords'
             ];
@@ -63,7 +82,7 @@ class AiService
 
         if (empty($context['claims']) && empty($context['entities'])) {
             return [
-                'answer' => __('ai.no_source_answer'),
+                'answer' => self::t('ai.no_source_answer'),
                 'sources' => [],
                 'status' => 'no_matching_documents'
             ];
@@ -72,16 +91,17 @@ class AiService
         // 4. Külső Gemini API hívása, ha van érvényes API kulcs
         $geminiKey = defined('GEMINI_API_KEY') ? trim(GEMINI_API_KEY) : '';
         if (!empty($geminiKey)) {
-            $systemPrompt = "Te a 'Nyitott Múlt - Orosháza titkos múltja' elnevezésű helytörténeti platform szigorúan forrásalapú levéltári AI kutatóasszisztense vagy.\n"
+            $noSourceText = self::t('ai.no_source_answer');
+            $systemPrompt = "Te a 'Nyitott Múlt - Orosháza titkos múltja' elnevezésű helytörténeti kutatóplatform szigorúan forrásalapú levéltári AI asszisztense vagy.\n"
                 . "SZABÁLYOK:\n"
                 . "1. Kizárólag a lent megadott HITELESÍTETT LEVÉLTÁRI FORRÁSOK alapján válaszolhatsz.\n"
-                . "2. Minden egyes kijelentésed végére KÖTELEZŐ kitenni a pontos forráshivatkozást, pl. [ÁBTL-3.1.2-M-123, 14. o.]!\n"
-                . "3. Ha a források nem tartalmaznak választ a feltett kérdésre, KIZÁRÓLAG ezt a választ adhatod szó szerint: '" . __('ai.no_source_answer') . "'\n"
+                . "2. Minden egyes kijelentésed végére KÖTELEZŐ kitenni a pontos forráshivatkozást, pl. [ÁBTL - H-61836, 1. o.]!\n"
+                . "3. Ha a megadott források nem tartalmaznak választ a feltett kérdésre, KIZÁRÓLAG ezt a választ adhatod szó szerint: '{$noSourceText}'\n"
                 . "4. Találgatni, kikövetkeztetni nem létező adatot SZIGORÚAN TILOS!\n"
-                . "5. Az aktában való puszta említés önmagában NEM jelent ügynöki múltat; mindig pontosan nevezd meg a szerepkört (megfigyelt, hivatásos tiszt, beszervezett informátor, egyéb említett).";
+                . "5. Az aktában való puszta említés önmagában NEM jelent ügynöki múltat; mindig pontosan nevezd meg a szerepkört és hivatkozz a forrásra.";
 
             $userPrompt = "KÉRDÉS: " . $question . "\n\n"
-                . "RENDELKEZÉSRE ÁLLÓ FORRÁSOK:\n"
+                . "RENDELKEZÉSRE ÁLLÓ HITELES FORRÁSOK ÉS ADATBÁZIS BEJEGYZÉSEK:\n"
                 . $context['formatted_text'] . "\n\n"
                 . "VÁLASZ:";
 
@@ -135,28 +155,28 @@ class AiService
             $score = 0;
             // Teljes keresőkifejezés pontos egyezése (pl. "adász zoltán")
             if (!empty($origCleanNorm) && mb_strlen($origCleanNorm) >= 4 && str_contains($haystackNorm, $origCleanNorm)) {
-                $score += 25;
+                $score += 30;
             }
 
             // Kérdés szavainak egyezése
             $matchedWords = 0;
             foreach ($origCleanWords as $w) {
                 if (preg_match('/(?:\b|[^\p{L}\p{N}])' . preg_quote($w, '/') . '(?:\b|[^\p{L}\p{N}])/ui', $haystackNorm)) {
-                    $score += 6;
+                    $score += 8;
                     $matchedWords++;
                 }
             }
 
             // Ha több kulcsszó volt, és mindegyik szerepel ebben az állításban: kiemelt bónusz
             if (count($origCleanWords) > 1 && $matchedWords === count($origCleanWords)) {
-                $score += 20;
+                $score += 25;
             }
 
             // Szótövek és szinonimák egyezése
             foreach ($searchTerms as $term) {
                 if (preg_match('/(?:\b|[^\p{L}\p{N}])' . preg_quote($term, '/') . '(?:\b|[^\p{L}\p{N}])/ui', $haystack)
                     || preg_match('/(?:\b|[^\p{L}\p{N}])' . preg_quote($term, '/') . '(?:\b|[^\p{L}\p{N}])/ui', $haystackNorm)) {
-                    $score += 1;
+                    $score += 2;
                 }
             }
 
@@ -169,8 +189,8 @@ class AiService
         // Relevancia szerinti csökkenő rendezés
         usort($scoredClaims, fn($a, $b) => $b['_score'] <=> $a['_score']);
 
-        // Legrelevánsabb állítások (max. 5) kiválasztása
-        $topClaims = array_slice($scoredClaims, 0, 5);
+        // Legrelevánsabb állítások (max. 8) kiválasztása
+        $topClaims = array_slice($scoredClaims, 0, 8);
 
         foreach ($topClaims as $c) {
             $ref = "[{$c['archive_code']}, {$c['page_number']}. o.]";
@@ -208,6 +228,18 @@ class AiService
             }
             if ($match) {
                 $entities[] = $ent;
+                $meta = json_decode($ent['metadata'] ?? '{}', true) ?: [];
+                $formattedText .= "Entitás adatlap:\n"
+                    . "Név: {$ent['canonical_name']}\n"
+                    . "Típus: {$ent['type']}\n";
+                if (!empty($meta['workplace'])) $formattedText .= "Munkahely: {$meta['workplace']}\n";
+                if (!empty($meta['address'])) $formattedText .= "Lakcím: {$meta['address']}\n";
+                if (!empty($meta['education'])) $formattedText .= "Iskolai végzettség: {$meta['education']}\n";
+                if (!empty($meta['recruiter_officer'])) $formattedText .= "Beszervező tiszt: {$meta['recruiter_officer']}\n";
+                if (!empty($meta['recruitment_date'])) $formattedText .= "Beszervezés ideje: {$meta['recruitment_date']}\n";
+                if (!empty($meta['operating_line'])) $formattedText .= "Foglalkoztatási vonal: {$meta['operating_line']}\n";
+                if (!empty($ent['archive_code'])) $formattedText .= "Iratjelzet: {$ent['archive_code']}\n";
+                $formattedText .= "\n";
             }
         }
 
@@ -228,7 +260,7 @@ class AiService
         $entities = $context['entities'];
 
         if (empty($claims) && empty($entities)) {
-            return __('ai.no_source_answer');
+            return self::t('ai.no_source_answer');
         }
 
         $lines = [];
@@ -246,12 +278,24 @@ class AiService
         } elseif (!empty($entities)) {
             $ent = $entities[0];
             $meta = json_decode($ent['metadata'] ?? '{}', true) ?: [];
-            $roleLabel = !empty($ent['role_type']) ? __("roles.{$ent['role_type']}") : "Ismert orosházi személy/intézmény";
+            $roleLabel = !empty($ent['role_type']) ? self::t("roles.{$ent['role_type']}") : "Ismert orosházi személy/intézmény";
 
-            $lines[] = "**Név/Megnevezés:** " . $ent['canonical_name'];
-            $lines[] = "**Szerepkör a forrásokban:** " . $roleLabel;
-            if (!empty($meta['occupation'])) {
-                $lines[] = "**Foglalkozás:** " . $meta['occupation'];
+            $lines[] = "**Név:** " . $ent['canonical_name'];
+            $lines[] = "**Szerepkör:** " . $roleLabel;
+            if (!empty($meta['workplace'])) {
+                $lines[] = "**Munkahely:** " . $meta['workplace'];
+            }
+            if (!empty($meta['address'])) {
+                $lines[] = "**Lakcím:** " . $meta['address'];
+            }
+            if (!empty($meta['education'])) {
+                $lines[] = "**Iskolai végzettség:** " . $meta['education'];
+            }
+            if (!empty($meta['recruiter_officer'])) {
+                $lines[] = "**Beszervező tiszt:** " . $meta['recruiter_officer'];
+            }
+            if (!empty($meta['recruitment_date'])) {
+                $lines[] = "**Beszervezés ideje:** " . $meta['recruitment_date'];
             }
             if (!empty($ent['archive_code'])) {
                 $lines[] = "**Kapcsolódó irat:** " . $ent['archive_code'] . " – " . ($ent['doc_title'] ?? '');
@@ -280,7 +324,9 @@ class AiService
             'ból', 'ből', 'bol', 'bel',
             'on', 'en', 'ön',
             'ot', 'et', 'öt', 'at',
-            'ra', 're'
+            'ra', 're',
+            'név', 'neve', 'nevét', 'nevei',
+            'ban', 'ben', 'ba', 'be'
         ];
         foreach ($suffixes as $s) {
             if (mb_strlen($word) > mb_strlen($s) + 2 && str_ends_with($word, $s)) {
@@ -305,14 +351,15 @@ class AiService
     }
 
     /**
-     * Gemini API hívás HTTP cURL alapon több modellre próbálkozva
+     * Gemini API hívás HTTP cURL alapon a működő modellpoollal
      */
     private static function callGeminiApi(string $systemPrompt, string $userPrompt, string $apiKey): ?string
     {
         $models = [
-            'gemini-3-flash-preview',
-            'gemini-3.8-flash',
-            'gemini-2.5-pro'
+            'gemini-3.1-flash-lite',
+            'gemini-3.1-flash-lite-preview',
+            'gemini-3.5-flash',
+            'gemini-flash-lite-latest'
         ];
 
         $payload = [
@@ -326,9 +373,11 @@ class AiService
             ],
             'generationConfig' => [
                 'temperature' => 0.2,
-                'maxOutputTokens' => 4096
+                'maxOutputTokens' => 2048
             ]
         ];
+
+        $jsonPayload = json_encode($payload, JSON_UNESCAPED_UNICODE);
 
         foreach ($models as $model) {
             $url = 'https://generativelanguage.googleapis.com/v1beta/models/' . $model . ':generateContent?key=' . urlencode($apiKey);
@@ -336,9 +385,10 @@ class AiService
             $ch = curl_init($url);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
-            curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
-            curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonPayload);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json; charset=utf-8']);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 4);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
             curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
 
@@ -350,7 +400,7 @@ class AiService
                 $json = json_decode($response, true);
                 $text = $json['candidates'][0]['content']['parts'][0]['text'] ?? null;
                 if (!empty($text)) {
-                    return $text;
+                    return trim($text);
                 }
             }
         }

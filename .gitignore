@@ -34,6 +34,8 @@ public_html/uploads/documents/*
 uploads/
 tools/deploy_kartons_to_server.py
 tools/downloaded_kartons.json
+tools/probe_ai_questions.py
+tools/debug_ai_error.py
 
 # Python cache és generált fájlok
 __pycache__/
