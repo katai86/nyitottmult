@@ -162,14 +162,45 @@ include __DIR__ . '/layout/header.php';
             </h3>
             <?php 
             $meta = json_decode($entity['metadata'] ?? '[]', true) ?: [];
+            $fieldLabels = [
+                'birth_place' => 'Születési hely',
+                'birth_date' => 'Születési idő',
+                'mother_name' => 'Anyja neve',
+                'workplace' => 'Munkahely és beosztás',
+                'address' => 'Lakcím',
+                'education' => 'Iskolai végzettség',
+                'party_after' => 'Pártállás (felsz. után)',
+                'party_before' => 'Pártállás (felsz. előtt)',
+                'military_service' => 'Katonai viszony',
+                'recruitment_date' => 'Beszervezés ideje',
+                'recruiter_officer' => 'Beszervező tiszt',
+                'recruitment_basis' => 'Beszervezés alapja',
+                'operating_line' => 'Foglalkoztatási vonal',
+                'network_rank' => 'Hálózati minősítés',
+                'settlement' => 'Település',
+                'nyitoszam' => 'Nyilvántartási nyitószám',
+                'b_dosszie' => 'B-dosszié száma'
+            ];
             ?>
-            <ul style="list-style: none; font-size: 0.85rem; line-height: 1.8; color: #334155;">
-                <?php foreach ($meta as $k => $v): ?>
-                    <?php if (is_string($v)): ?>
-                        <li><strong><?= htmlspecialchars(ucfirst(str_replace('_', ' ', $k))) ?>:</strong> <?= htmlspecialchars($v) ?></li>
+            <ul style="list-style: none; font-size: 0.85rem; line-height: 1.8; color: #334155; padding: 0;">
+                <?php foreach ($fieldLabels as $key => $label): ?>
+                    <?php if (!empty($meta[$key])): ?>
+                        <li style="border-bottom: 1px dashed #e2e8f0; padding: 0.35rem 0;">
+                            <strong style="color: #475569;"><?= $label ?>:</strong> 
+                            <span style="color: #0f172a; font-weight: 600;"><?= htmlspecialchars((string)$meta[$key]) ?></span>
+                        </li>
                     <?php endif; ?>
                 <?php endforeach; ?>
-                <li><strong>Közzétehetőség:</strong> 2026. évi LI. tv. alapján ellenőrizve</li>
+                <?php if (!empty($meta['local_pdf_path'])): ?>
+                    <li style="margin-top: 1rem;">
+                        <a href="/<?= htmlspecialchars(ltrim($meta['local_pdf_path'], '/')) ?>" target="_blank" class="btn btn-primary" style="display: block; text-align: center; font-size: 0.85rem; padding: 0.5rem; background: #1d4ed8; color: #fff; text-decoration: none; border-radius: 6px; font-weight: 600;">
+                            📄 Eredeti ÁBTL 6-os karton (PDF) letöltése &darr;
+                        </a>
+                    </li>
+                <?php endif; ?>
+                <li style="padding-top: 0.5rem; color: #64748b; font-size: 0.75rem;">
+                    🛡️ <strong>Közzétehetőség:</strong> 2026. évi LI. tv. alapján ellenőrizve
+                </li>
             </ul>
         </div>
 

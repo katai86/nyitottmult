@@ -1,5 +1,6 @@
 # Környezeti és érzékeny fájlok
 .env
+gemini_key.txt
 db_creds.txt
 config.local.php
 tools/prod_config.php
@@ -28,6 +29,11 @@ public_html/uploads/docs/*
 !public_html/uploads/docs/.gitkeep
 public_html/uploads/submissions/*
 !public_html/uploads/submissions/.gitkeep
+public_html/uploads/documents/*
+!public_html/uploads/documents/.gitkeep
+uploads/
+tools/deploy_kartons_to_server.py
+tools/downloaded_kartons.json
 
 # Python cache és generált fájlok
 __pycache__/

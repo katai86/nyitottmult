@@ -45,6 +45,11 @@ include __DIR__ . '/layout/header.php';
         <a href="/dokumentumok" class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.25rem 0.6rem;">&larr; Vissza az iratokhoz</a>
         <span class="badge badge-verified"><?= htmlspecialchars($doc['document_type']) ?></span>
         <span style="font-family: monospace; font-size: 0.85rem; color: #64748b;"><?= htmlspecialchars($doc['archive_code']) ?></span>
+        <?php if (!empty($currentPage['image_path']) && str_ends_with(strtolower($currentPage['image_path']), '.pdf')): ?>
+            <a href="/<?= htmlspecialchars(ltrim($currentPage['image_path'], '/')) ?>" target="_blank" class="btn btn-primary" style="font-size: 0.8rem; padding: 0.25rem 0.6rem; background: #2563eb; color: #fff; text-decoration: none; font-weight: 600;">
+                📄 Eredeti ÁBTL PDF Megtekintése / Letöltése &darr;
+            </a>
+        <?php endif; ?>
         <?php if (!empty($doc['original_url'])): ?>
             <a href="<?= htmlspecialchars($doc['original_url']) ?>" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.25rem 0.6rem; background: #e0f2fe; color: #0369a1; border-color: #bae6fd;">
                 🏛️ Hivatalos ÁBTL Nyitott Akták &rarr;
@@ -84,14 +89,26 @@ include __DIR__ . '/layout/header.php';
 
 <!-- Kétoszlopos néző: Balra OpenSeadragon kép + Bounding Boxok, Jobbra OCR szöveg + Állítások -->
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; align-items: start;">
-    <!-- Bal oszlop: OpenSeadragon képmegjelenítő -->
+    <!-- Bal oszlop: OpenSeadragon képmegjelenítő vagy beágyazott PDF -->
     <div>
         <div class="card" style="padding: 0.5rem;">
-            <div id="openseadragon-viewer" style="height: 680px; background: #0f172a;"></div>
-            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem; display: flex; justify-content: space-between;">
-                <span>Egér görgő: Zoom | Húzás: Mozgatás</span>
-                <span id="zoomDisplay">Zoom: 100%</span>
-            </div>
+            <?php 
+            $rawImagePath = ltrim($currentPage['image_path'] ?? '', '/');
+            $isPdf = str_ends_with(strtolower($rawImagePath), '.pdf');
+            ?>
+            <?php if ($isPdf): ?>
+                <iframe src="/<?= htmlspecialchars($rawImagePath) ?>" style="width: 100%; height: 680px; border: none; border-radius: 4px;"></iframe>
+                <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem; display: flex; justify-content: space-between; align-items: center;">
+                    <span>🏛️ ÁBTL hitelesített levéltári szkennelt PDF</span>
+                    <a href="/<?= htmlspecialchars($rawImagePath) ?>" target="_blank" class="btn btn-secondary" style="font-size: 0.75rem; padding: 0.2rem 0.5rem; color: var(--primary); font-weight: 600;">Teljes méret / Letöltés &darr;</a>
+                </div>
+            <?php else: ?>
+                <div id="openseadragon-viewer" style="height: 680px; background: #0f172a;"></div>
+                <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem; display: flex; justify-content: space-between;">
+                    <span>Egér görgő: Zoom | Húzás: Mozgatás</span>
+                    <span id="zoomDisplay">Zoom: 100%</span>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 
@@ -158,6 +175,7 @@ include __DIR__ . '/layout/header.php';
     </div>
 </div>
 
+<?php if (!$isPdf): ?>
 <!-- Néző Inicializáló Szkript -->
 <script>
     window.viewerConfig = {
@@ -167,5 +185,6 @@ include __DIR__ . '/layout/header.php';
     };
 </script>
 <script src="/assets/js/viewer.js"></script>
+<?php endif; ?>
 
 <?php include __DIR__ . '/layout/footer.php'; ?>

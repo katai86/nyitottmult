@@ -41,6 +41,11 @@ class PrivacyEngine
             return $entity;
         }
 
+        // Ha a törvény vagy lektori jóváhagyás alapján kifejezetten nyilvánosnak minősített (pl. ÁBTL által közzétett levéltári irat)
+        if (!empty($privacyRecord['is_publicly_visible'])) {
+            return $entity;
+        }
+
         $status = $privacyRecord['status'] ?? 'unknown';
         $deathYear = isset($privacyRecord['death_year']) ? (int)$privacyRecord['death_year'] : null;
 
